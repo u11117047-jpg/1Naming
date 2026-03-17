@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ 藝名神器 ✨</title>
+    <style>
+        :root {
+            --bg-main: #0a0a0c;
+            --card-bg: #141416;
+            --card-border: #2a2a2d;
+            
+            /* 燙金漸層色碼 */
+            --gold-light: #fcf6ba;
+            --gold-main: #d4af37;
+            --gold-dark: #aa771c;
+            --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            
+            --text-gray: #a0a0a0;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+            background-color: var(--bg-main);
+            background-image: radial-gradient(circle at 50% 0%, #1f1f1f 0%, #0a0a0c 70%);
+            background-attachment: fixed;
+            margin: 0; 
+            padding: 20px; 
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        /* 燙金文字特效 */
+        .text-gold {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+            font-weight: bold;
+        }
+
+        /* 金色邊框特效 */
+        .border-gold {
+            position: relative;
+            border: 1px solid transparent;
+            background-clip: padding-box;
+            border-radius: 20px;
+        }
+        .border-gold::before {
+            content: '';
+            position: absolute;
+            top: -2px; bottom: -2px; left: -2px; right: -2px;
+            background: var(--gold-gradient);
+            z-index: -1;
+            border-radius: 22px;
+            opacity: 0.6;
+            transition: 0.3s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 頁面切換控制 */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-title {
+            text-align: center;
+            font-size: 3rem;
+            margin: 20px 0 40px;
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            margin-bottom: 25px;
+        }
+
+        /* 修改了標題排版，確保強制同一行 */
+        .section-title {
+            font-size: 1.2rem;
+            margin: 25px 0 15px;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            background: var(--gold-gradient);
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+        .optional-mark {
+            font-size: 0.85rem;
+            color: #777;
+            font-weight: normal;
+            margin-left: 10px;
+            letter-spacing: 1px;
+        }
+
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        /* 標籤按鈕樣式 */
+        .tag {
+            background: #1e1e1e;
+            color: var(--text-gray);
+            border: 1px solid #333;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        .tag:hover {
+            border-color: var(--gold-main);
+            color: var(--gold-light);
+        }
+        .tag.active {
+            background: var(--gold-gradient);
+            color: #000;
+            border-color: transparent;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-main {
+            display: block;
+            width: fit-content;
+            margin: 40px auto;
+            background: var(--gold-gradient);
+            color: #000;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .btn-main:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.5);
+        }
+
+        .btn-secondary {
+            display: block;
+            width: fit-content;
+            margin: 30px auto 10px;
+            background: #1e1e1e;
+            color: var(--gold-main);
+            border: 2px solid var(--gold-main);
+            padding: 15px 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            letter-spacing: 2px;
+        }
+        .btn-secondary:hover {
+            background: rgba(212, 175, 55, 0.1);
+            transform: scale(1.05);
+        }
+
+        /* 第二頁佈局：結果與候選清單 */
+        .layout-p2 {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+        }
+        @media (max-width: 900px) {
+            .layout-p2 { grid-template-columns: 1fr; }
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .name-card {
+            background: #181818;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .name-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: var(--gold-gradient);
+            opacity: 0;
+            transition: 0.3s;
+        }
+        .name-card:hover {
+            transform: translateY(-5px);
+            background: #222;
+            border-color: var(--gold-main);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+        }
+        .name-card:hover::before { opacity: 1; }
+        
+        .name-main {
+            font-size: 2.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .name-tags {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            line-height: 1.4;
+            margin-top: auto;
+        }
+        .match-score {
+            position: absolute;
+            top: 10px; right: 10px;
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--gold-light);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+
+        /* 側邊欄：候選名單 */
+        .shortlist-box {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+        .list-item {
+            background: #1e1e1e;
+            border-left: 4px solid var(--gold-main);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+        .del-btn {
+            background: transparent;
+            color: var(--text-gray);
+            border: 1px solid #444;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .del-btn:hover {
+            color: #ff4d4d;
+            border-color: #ff4d4d;
+            background: rgba(255, 77, 77, 0.1);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--gold-main);
+            border: 1px solid var(--gold-main);
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+        .btn-outline:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="header-title text-gold">⚜️ 藝名神器 ⚜️</h1>
+
+    <div id="page1" class="page active">
+        <div class="card border-gold">
+            <p style="color: var(--text-gray); text-align: center; margin-bottom: 30px;">
+                點選符合您風格的標籤。選得越多，生成的結果越精準。
+            </p>
+
+            <div id="tags-container"></div>
+
+            <p id="loading-status" style="text-align: center; color: var(--gold-main); font-size: 0.9rem; margin-top: 10px;"></p>
+
+            <button id="main-gen-btn" class="btn-main" onclick="generateAndGoToPage2()">✨ 點擊生成專屬藝名 ✨</button>
+        </div>
+    </div>
+
+    <div id="page2" class="page">
+        <div class="top-nav">
+            <button class="btn-outline" onclick="goToPage1()">⟵ 重新選擇標籤</button>
+            <span style="color: var(--text-gray);">為您匹配契合度最高的名單</span>
+        </div>
+
+        <div class="layout-p2">
+            <div class="card">
+                <h2 class="text-gold" style="margin-top: 0;">🔮 專屬推薦靈感</h2>
+                <div id="resultArea" class="results-grid"></div>
+                
+                <button class="btn-secondary" onclick="generateMore()">🔮 繼續生成新名單</button>
+            </div>
+
+            <div class="card shortlist-box border-gold">
+                <h2 class="text-gold" style="text-align: center; margin-top: 0;">🏆 候選名單</h2>
+                <div id="listItems">
+                    <p style="color: #666; text-align: center; margin: 40px 0;">
+                        點擊左側名字<br>即可收藏至此
+                    </p>
+                </div>
+                <button onclick="clearList()" style="width:100%; background:none; border:1px solid #444; margin-top:30px; cursor:pointer; color:#888; border-radius:15px; padding:12px; transition: 0.3s;">全部清除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- 1. 定義分類與標籤 (中英代碼對照版) ---
+    const tagCategories = {
+        "📏 1. 字數與格式": [
+            { text: "雙字名", code: "A1" }, { text: "三字名", code: "A2" }, { text: "疊字", code: "A3" }
+        ],
+        "🌍 2. 風格與派系": [
+            { text: "韓系", code: "B1" }, { text: "日系", code: "B2" }, { text: "中式古風", code: "B3" }, { text: "洋氣英文", code: "B4" }
+        ],
+        "🎭 3. 人設與氣質": [
+            { text: "御姐", code: "C1" }, { text: "鄰家女孩", code: "C2" }, { text: "千金大小姐", code: "C3" }, { text: "純慾系", code: "C4" },
+            { text: "笨蛋美女", code: "C5" }, { text: "高冷女王", code: "C6" }, { text: "初戀系", code: "C7" }, { text: "小惡魔", code: "C8" },
+            { text: "萌系", code: "C9" }, { text: "俏皮活潑", code: "C10" }
+        ],
+        "🎨 4. 視覺與氛圍": [
+            { text: "粉色系", code: "D1" }, { text: "冷藍色", code: "D2" }, { text: "純白色", code: "D3" }, { text: "暗黑色", code: "D4" }, { text: "元氣黃", code: "D5" }
+        ],
+        "⏳ 5. 聽覺年齡": [
+            { text: "幼態感", code: "E1" }, { text: "少女感", code: "E2" }, { text: "知性輕熟感", code: "E3" }, { text: "熟女感", code: "E4" }
+        ],
+        "🧩 6. 具體元素與性格": [
+            { text: "動物系", code: "F1" }, { text: "植物系", code: "F2" }, { text: "季節/節氣", code: "F3" }, { text: "名牌", code: "F4" },
+            { text: "國度/區域地名", code: "F5" }, { text: "食物甜點", code: "F6" }, { text: "E人", code: "F7" }, { text: "I人", code: "F8" }
+        ],
+        "🔠 7. 熱門字首/字尾/讀音": [
+            { text: "妍", code: "G1" }, { text: "熙", code: "G2" }, { text: "恩", code: "G3" }, { text: "娜 / 奈", code: "G4" },
+            { text: "莉 / 梨", code: "G5" }, { text: "米 / 蜜 / 咪", code: "G6" }, { text: "允", code: "G7" }, { text: "語 / 妤", code: "G8" },
+            { text: "雅 / 婭", code: "G9" }, { text: "智 / 芷 / 知", code: "G10" }
+        ]
+    };
+
+    // 建立代碼轉換回中文的字典 (顯示用)
+    const codeToText = {};
+    for (const cat in tagCategories) {
+        tagCategories[cat].forEach(t => {
+            codeToText[t.code] = t.text;
+        });
+    }
+
+    // --- 2. 內建超大型資料庫 (不需外部讀取) ---
+    const nameDatabase = [
+    { "name": "珍妮", "tags": ["A1", "B4", "C3", "D4", "E3", "F7"] },
+    { "name": "莉莎", "tags": ["A1", "B4", "C10", "D5", "E2", "F7", "G5"] },
+    { "name": "智秀", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G10"] },
+    { "name": "彩英", "tags": ["A1", "B1", "C10", "D5", "E2", "F7"] },
+    { "name": "員瑛", "tags": ["A1", "B1", "C3", "D1", "E2", "F7"] },
+    { "name": "兪真", "tags": ["A1", "B1", "C1", "D2", "E3", "F7"] },
+    { "name": "秋天", "tags": ["A1", "B1", "C6", "D2", "E3", "F3", "F8"] },
+    { "name": "麗茲", "tags": ["A1", "B4", "C5", "D5", "E2", "F7"] },
+    { "name": "李瑞", "tags": ["A1", "B1", "C9", "D1", "E1", "F7"] },
+    { "name": "智敏", "tags": ["A1", "B1", "C6", "D4", "E3", "F8", "G10"] },
+    { "name": "寧寧", "tags": ["A3", "B3", "C8", "D4", "E2", "F7"] },
+    { "name": "繪里", "tags": ["A1", "B2", "C7", "D3", "E2", "F8"] },
+    { "name": "冬兒", "tags": ["A1", "B1", "C9", "D3", "E1", "F3", "F8"] },
+    { "name": "玟池", "tags": ["A1", "B1", "C1", "D4", "E3", "F8"] },
+    { "name": "漢妮", "tags": ["A1", "B4", "C9", "D5", "E2", "F7"] },
+    { "name": "丹妮", "tags": ["A1", "B4", "C10", "D5", "E2", "F7"] },
+    { "name": "海潾", "tags": ["A1", "B1", "C6", "D2", "E2", "F8"] },
+    { "name": "惠仁", "tags": ["A1", "B1", "C1", "D4", "E2", "F7"] },
+    { "name": "采源", "tags": ["A1", "B1", "C8", "D4", "E2", "F8"] },
+    { "name": "允真", "tags": ["A1", "B1", "C10", "D5", "E3", "F7", "G7"] },
+    { "name": "一葉", "tags": ["A1", "B2", "C6", "D3", "E3", "F2", "F8"] },
+    { "name": "恩採", "tags": ["A1", "B1", "C9", "D1", "E1", "F7", "G3"] },
+    { "name": "娜璉", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "定延", "tags": ["A1", "B1", "C1", "D4", "E3", "F8"] },
+    { "name": "紗夏", "tags": ["A1", "B2", "C8", "D1", "E2", "F7"] },
+    { "name": "志效", "tags": ["A1", "B1", "C1", "D5", "E3", "F7"] },
+    { "name": "米娜", "tags": ["A1", "B2", "C3", "D3", "E3", "F8", "G4", "G6"] },
+    { "name": "多賢", "tags": ["A1", "B1", "C5", "D3", "E2", "F7"] },
+    { "name": "子瑜", "tags": ["A1", "B1", "C3", "D2", "E3", "F8", "G8"] },
+    { "name": "艾琳", "tags": ["A1", "B1", "C6", "D3", "E3", "F8"] },
+    { "name": "瑟琪", "tags": ["A1", "B1", "C8", "D5", "E2", "F8"] },
+    { "name": "溫蒂", "tags": ["A1", "B4", "C2", "D2", "E3", "F8"] },
+    { "name": "秀英", "tags": ["A1", "B1", "C1", "D4", "E4", "F7"] },
+    { "name": "藝琳", "tags": ["A1", "B1", "C10", "D1", "E2", "F7"] },
+    { "name": "禮志", "tags": ["A1", "B1", "C8", "D4", "E2", "F8", "G10"] },
+    { "name": "留真", "tags": ["A1", "B1", "C1", "D2", "E2", "F8"] },
+    { "name": "彩領", "tags": ["A1", "B1", "C3", "D1", "E2", "F8"] },
+    { "name": "有娜", "tags": ["A1", "B1", "C7", "D1", "E2", "F7", "G4"] },
+    { "name": "莉亞", "tags": ["A1", "B4", "C3", "D1", "E3", "F7", "G5", "G9"] },
+    { "name": "海嫄", "tags": ["A1", "B1", "C10", "D5", "E2", "F7"] },
+    { "name": "雪允", "tags": ["A1", "B1", "C3", "D3", "E2", "F3", "F8", "G7"] },
+    { "name": "智雨", "tags": ["A1", "B1", "C7", "D2", "E2", "F8", "G10"] },
+    { "name": "圭珍", "tags": ["A1", "B1", "C9", "D1", "E1", "F7"] },
+    { "name": "蒔恩", "tags": ["A1", "B1", "C2", "D3", "E2", "F8", "G3"] },
+    { "name": "秀珉", "tags": ["A1", "B1", "C7", "D1", "E2", "F8"] },
+    { "name": "璦莎", "tags": ["A1", "B4", "C1", "D4", "E3", "F7"] },
+    { "name": "世恩", "tags": ["A1", "B1", "C2", "D1", "E2", "F8", "G3"] },
+    { "name": "婕怡", "tags": ["A1", "B1", "C10", "D5", "E2", "F7"] },
+    { "name": "娜特", "tags": ["A1", "B4", "C1", "D4", "E3", "F7", "G4"] },
+    { "name": "貝兒", "tags": ["A1", "B4", "C9", "D5", "E1", "F8"] },
+    { "name": "茱莉", "tags": ["A1", "B4", "C10", "D1", "E2", "F7", "G5"] },
+    { "name": "荷娜", "tags": ["A1", "B1", "C2", "D3", "E2", "F2", "F8", "G4"] },
+    { "name": "知恩", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G3", "G10"] },
+    { "name": "秀智", "tags": ["A1", "B1", "C7", "D3", "E3", "F8", "G10"] },
+    { "name": "韶禧", "tags": ["A1", "B1", "C3", "D1", "E3", "F8"] },
+    { "name": "智媛", "tags": ["A1", "B1", "C1", "D3", "E3", "F8", "G10"] },
+    { "name": "寅娜", "tags": ["A1", "B1", "C4", "D1", "E3", "F7", "G4"] },
+    { "name": "敏英", "tags": ["A1", "B1", "C1", "D3", "E3", "F7"] },
+    { "name": "藝珍", "tags": ["A1", "B1", "C7", "D3", "E3", "F8"] },
+    { "name": "泰妍", "tags": ["A1", "B1", "C6", "D3", "E3", "F8", "G1"] },
+    { "name": "泫雅", "tags": ["A1", "B1", "C8", "D4", "E3", "F7", "G9"] },
+    { "name": "宣美", "tags": ["A1", "B1", "C1", "D4", "E4", "F7"] },
+    { "name": "惠利", "tags": ["A1", "B1", "C10", "D5", "E2", "F7"] },
+    { "name": "聖經", "tags": ["A1", "B1", "C6", "D2", "E3", "F8"] },
+    { "name": "裕貞", "tags": ["A1", "B1", "C2", "D1", "E2", "F7"] },
+    { "name": "所泫", "tags": ["A1", "B1", "C7", "D3", "E2", "F8"] },
+    { "name": "恩地", "tags": ["A1", "B1", "C2", "D5", "E3", "F7", "G3"] },
+    { "name": "夏榮", "tags": ["A1", "B1", "C1", "D2", "E3", "F3", "F8"] },
+    { "name": "初瓏", "tags": ["A1", "B1", "C9", "D1", "E2", "F8"] },
+    { "name": "普美", "tags": ["A1", "B1", "C10", "D5", "E2", "F7"] },
+    { "name": "娜恩", "tags": ["A1", "B1", "C7", "D3", "E2", "F8", "G3", "G4"] },
+    { "name": "孝敏", "tags": ["A1", "B1", "C1", "D4", "E3", "F7"] },
+    { "name": "恩靜", "tags": ["A1", "B1", "C1", "D2", "E3", "F8", "G3"] },
+    { "name": "智妍", "tags": ["A1", "B1", "C6", "D4", "E3", "F8", "G1", "G10"] },
+    { "name": "寶藍", "tags": ["A1", "B1", "C9", "D2", "E2", "F7"] },
+    { "name": "居麗", "tags": ["A1", "B1", "C3", "D1", "E3", "F8"] },
+    { "name": "素妍", "tags": ["A1", "B1", "C1", "D4", "E4", "F8", "G1"] },
+    { "name": "多順", "tags": ["A1", "B1", "C2", "D3", "E2", "F8"] },
+    { "name": "寶拉", "tags": ["A1", "B1", "C10", "D5", "E3", "F7"] },
+    { "name": "昭宥", "tags": ["A1", "B1", "C1", "D2", "E3", "F8"] },
+    { "name": "孝琳", "tags": ["A1", "B1", "C1", "D4", "E4", "F7"] },
+    { "name": "佳人", "tags": ["A1", "B1", "C8", "D4", "E3", "F8"] },
+    { "name": "請夏", "tags": ["A1", "B1", "C1", "D2", "E3", "F3", "F7"] },
+    { "name": "昭彌", "tags": ["A1", "B1", "C10", "D5", "E2", "F7"] },
+    { "name": "元熙", "tags": ["A1", "B1", "C9", "D1", "E1", "F7", "G2"] },
+    { "name": "李露", "tags": ["A1", "B1", "C2", "D3", "E2", "F8"] },
+    { "name": "敏珠", "tags": ["A1", "B1", "C7", "D3", "E2", "F8"] },
+    { "name": "玧我", "tags": ["A1", "B1", "C7", "D3", "E3", "F7"] },
+    { "name": "漫和", "tags": ["A1", "B1", "C2", "D5", "E2", "F8"] },
+    { "name": "世京", "tags": ["A1", "B1", "C6", "D2", "E3", "F8"] },
+    { "name": "宋雅", "tags": ["A1", "B1", "C3", "D1", "E3", "F8", "G9"] },
+    { "name": "宋恩", "tags": ["A1", "B1", "C1", "D3", "E3", "F8", "G3"] },
+    { "name": "允兒", "tags": ["A1", "B1", "C7", "D3", "E2", "F1", "F7", "G7"] },
+    { "name": "允恩", "tags": ["A1", "B1", "C2", "D1", "E2", "F8", "G3", "G7"] },
+    { "name": "允熙", "tags": ["A1", "B1", "C3", "D2", "E3", "F8", "G2", "G7"] },
+    { "name": "允希", "tags": ["A1", "B1", "C7", "D3", "E2", "F8", "G7"] },
+    { "name": "允雅", "tags": ["A1", "B1", "C3", "D1", "E3", "F7", "G7", "G9"] },
+    { "name": "允娜", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G4", "G7"] },
+    { "name": "允妍", "tags": ["A1", "B1", "C4", "D1", "E2", "F8", "G1", "G7"] },
+    { "name": "允夢", "tags": ["A1", "B1", "C9", "D3", "E1", "F8", "G7"] },
+    { "name": "允芯", "tags": ["A1", "B1", "C2", "D5", "E2", "F7", "G7"] },
+    { "name": "允瑞", "tags": ["A1", "B1", "C1", "D2", "E3", "F8", "G7"] },
+    { "name": "允彩", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G7"] },
+    { "name": "允歆", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G7"] },
+    { "name": "允宣", "tags": ["A1", "B1", "C2", "D2", "E3", "F8", "G7"] },
+    { "name": "允沁", "tags": ["A1", "B1", "C7", "D2", "E2", "F8", "G7"] },
+    { "name": "允沐", "tags": ["A1", "B1", "C7", "D3", "E2", "F8", "G7"] },
+    { "name": "允芊", "tags": ["A1", "B3", "C2", "D1", "E2", "F2", "F8", "G7"] },
+    { "name": "允芷", "tags": ["A1", "B3", "C6", "D2", "E3", "F2", "F8", "G7", "G10"] },
+    { "name": "允萌", "tags": ["A1", "B1", "C9", "D1", "E1", "F7", "G7"] },
+    { "name": "允曼", "tags": ["A1", "B1", "C1", "D4", "E4", "F8", "G7"] },
+    { "name": "允晨", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G7"] },
+    { "name": "允汐", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G7"] },
+    { "name": "允采", "tags": ["A1", "B1", "C2", "D1", "E2", "F8", "G7"] },
+    { "name": "允瑾", "tags": ["A1", "B1", "C3", "D2", "E3", "F8", "G7"] },
+    { "name": "允書", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G7"] },
+    { "name": "恩彩", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G3"] },
+    { "name": "恩采", "tags": ["A1", "B1", "C2", "D1", "E2", "F8", "G3"] },
+    { "name": "采恩", "tags": ["A1", "B1", "C2", "D1", "E2", "F8", "G3"] },
+    { "name": "恩妍", "tags": ["A1", "B1", "C4", "D1", "E3", "F7", "G1", "G3"] },
+    { "name": "妍恩", "tags": ["A1", "B1", "C4", "D1", "E3", "F7", "G1", "G3"] },
+    { "name": "恩娜", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G3", "G4"] },
+    { "name": "恩雅", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G3", "G9"] },
+    { "name": "恩芯", "tags": ["A1", "B1", "C9", "D1", "E1", "F7", "G3"] },
+    { "name": "恩希", "tags": ["A1", "B1", "C7", "D3", "E2", "F8", "G3"] },
+    { "name": "恩佳", "tags": ["A1", "B1", "C2", "D1", "E2", "F8", "G3"] },
+    { "name": "恩菈", "tags": ["A1", "B4", "C8", "D4", "E2", "F7", "G3"] },
+    { "name": "念恩", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G3"] },
+    { "name": "予恩", "tags": ["A1", "B1", "C7", "D3", "E2", "F8", "G3"] },
+    { "name": "恩妮", "tags": ["A1", "B4", "C9", "D1", "E1", "F7", "G3"] },
+    { "name": "芷恩", "tags": ["A1", "B1", "C6", "D2", "E3", "F2", "F8", "G3", "G10"] },
+    { "name": "恩瑤", "tags": ["A1", "B3", "C3", "D1", "E3", "F8", "G3"] },
+    { "name": "欣恩", "tags": ["A1", "B1", "C2", "D1", "E2", "F7", "G3"] },
+    { "name": "恩欣", "tags": ["A1", "B1", "C2", "D1", "E2", "F7", "G3"] },
+    { "name": "熙恩", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G2", "G3"] },
+    { "name": "恩然", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G3"] },
+    { "name": "恩典", "tags": ["A1", "B1", "C1", "D3", "E4", "F8", "G3"] },
+    { "name": "恩琳", "tags": ["A1", "B1", "C3", "D2", "E3", "F8", "G3"] },
+    { "name": "尹恩", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G3"] },
+    { "name": "恩琪", "tags": ["A1", "B1", "C2", "D1", "E2", "F7", "G3"] },
+    { "name": "詩恩", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G3"] },
+    { "name": "可恩", "tags": ["A1", "B1", "C9", "D1", "E1", "F7", "G3"] },
+    { "name": "彤恩", "tags": ["A1", "B1", "C10", "D1", "E2", "F7", "G3"] },
+    { "name": "琳恩", "tags": ["A1", "B4", "C1", "D4", "E3", "F7", "G3"] },
+    { "name": "泌恩", "tags": ["A1", "B1", "C7", "D2", "E2", "F8", "G3"] },
+    { "name": "雅恩", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G3", "G9"] },
+    { "name": "維恩", "tags": ["A1", "B4", "C1", "D4", "E3", "F8", "G3"] },
+    { "name": "京恩", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G3"] },
+    { "name": "宥恩", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G3"] },
+    { "name": "恩星", "tags": ["A1", "B1", "C10", "D5", "E2", "F3", "F7", "G3"] },
+    { "name": "星恩", "tags": ["A1", "B1", "C10", "D5", "E2", "F3", "F7", "G3"] },
+    { "name": "海恩", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G3"] },
+    { "name": "夏恩", "tags": ["A1", "B1", "C10", "D5", "E2", "F3", "F7", "G3"] },
+    { "name": "荷恩", "tags": ["A1", "B3", "C2", "D2", "E3", "F2", "F8", "G3"] },
+    { "name": "沁恩", "tags": ["A1", "B1", "C7", "D2", "E2", "F8", "G3"] },
+    { "name": "沐恩", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G3"] },
+    { "name": "芊恩", "tags": ["A1", "B1", "C9", "D1", "E2", "F2", "F7", "G3"] },
+    { "name": "芯恩", "tags": ["A1", "B1", "C9", "D1", "E1", "F2", "F7", "G3"] },
+    { "name": "瑞恩", "tags": ["A1", "B4", "C1", "D4", "E3", "F7", "G3"] },
+    { "name": "彩恩", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G3"] },
+    { "name": "歆恩", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G3"] },
+    { "name": "宣恩", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G3"] },
+    { "name": "希恩", "tags": ["A1", "B1", "C7", "D3", "E2", "F8", "G3"] },
+    { "name": "舒恩", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G3"] },
+    { "name": "若恩", "tags": ["A1", "B3", "C6", "D2", "E3", "F8", "G3"] },
+    { "name": "艾恩", "tags": ["A1", "B4", "C10", "D5", "E2", "F2", "F7", "G3"] },
+    { "name": "蘇恩", "tags": ["A1", "B1", "C4", "D1", "E3", "F7", "G3"] },
+    { "name": "凡恩", "tags": ["A1", "B4", "C6", "D4", "E3", "F8", "G3"] },
+    { "name": "萌恩", "tags": ["A1", "B1", "C9", "D1", "E1", "F7", "G3"] },
+    { "name": "晨恩", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G3"] },
+    { "name": "汐恩", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G3"] },
+    { "name": "妍熙", "tags": ["A1", "B1", "C3", "D1", "E3", "F7", "G1", "G2"] },
+    { "name": "語熙", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G2", "G8"] },
+    { "name": "璟熙", "tags": ["A1", "B1", "C1", "D4", "E3", "F8", "G2"] },
+    { "name": "熙寧", "tags": ["A1", "B3", "C3", "D3", "E3", "F8", "G2"] },
+    { "name": "沐熙", "tags": ["A1", "B3", "C2", "D2", "E2", "F8", "G2"] },
+    { "name": "熙禾", "tags": ["A1", "B3", "C2", "D3", "E2", "F2", "F8", "G2"] },
+    { "name": "若熙", "tags": ["A1", "B3", "C6", "D2", "E3", "F8", "G2"] },
+    { "name": "沫熙", "tags": ["A1", "B1", "C4", "D1", "E2", "F8", "G2"] },
+    { "name": "梓熙", "tags": ["A1", "B1", "C1", "D4", "E3", "F2", "F8", "G2"] },
+    { "name": "南熙", "tags": ["A1", "B3", "C6", "D4", "E3", "F8", "G2"] },
+    { "name": "夏熙", "tags": ["A1", "B1", "C10", "D5", "E2", "F3", "F7", "G2"] },
+    { "name": "晨熙", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G2"] },
+    { "name": "熙然", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G2"] },
+    { "name": "熙琳", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G2"] },
+    { "name": "安熙", "tags": ["A1", "B1", "C2", "D3", "E2", "F8", "G2"] },
+    { "name": "愛熙", "tags": ["A1", "B1", "C8", "D1", "E2", "F7", "G2"] },
+    { "name": "熙拉", "tags": ["A1", "B4", "C8", "D4", "E3", "F7", "G2"] },
+    { "name": "智熙", "tags": ["A1", "B1", "C1", "D4", "E3", "F8", "G2", "G10"] },
+    { "name": "秀熙", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G2"] },
+    { "name": "雅熙", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G2", "G9"] },
+    { "name": "素熙", "tags": ["A1", "B1", "C6", "D2", "E4", "F8", "G2"] },
+    { "name": "瑞熙", "tags": ["A1", "B1", "C1", "D4", "E3", "F8", "G2"] },
+    { "name": "歆熙", "tags": ["A1", "B1", "C3", "D3", "E2", "F8", "G2"] },
+    { "name": "宣熙", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G2"] },
+    { "name": "沁熙", "tags": ["A1", "B1", "C7", "D2", "E2", "F8", "G2"] },
+    { "name": "芷熙", "tags": ["A1", "B3", "C6", "D2", "E3", "F2", "F8", "G2", "G10"] },
+    { "name": "夢熙", "tags": ["A1", "B1", "C4", "D1", "E2", "F8", "G2"] },
+    { "name": "惠熙", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G2"] },
+    { "name": "芯熙", "tags": ["A1", "B1", "C9", "D1", "E1", "F2", "F7", "G2"] },
+    { "name": "芊熙", "tags": ["A1", "B1", "C7", "D1", "E2", "F2", "F8", "G2"] },
+    { "name": "希熙", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G2"] },
+    { "name": "舒熙", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G2"] },
+    { "name": "艾熙", "tags": ["A1", "B4", "C1", "D4", "E3", "F2", "F7", "G2"] },
+    { "name": "蘇熙", "tags": ["A1", "B4", "C3", "D3", "E3", "F8", "G2"] },
+    { "name": "凡熙", "tags": ["A1", "B3", "C6", "D2", "E3", "F8", "G2"] },
+    { "name": "萌熙", "tags": ["A1", "B1", "C9", "D1", "E1", "F7", "G2"] },
+    { "name": "汐熙", "tags": ["A1", "B3", "C6", "D2", "E3", "F8", "G2"] },
+    { "name": "采熙", "tags": ["A1", "B1", "C2", "D3", "E2", "F8", "G2"] },
+    { "name": "瑾熙", "tags": ["A1", "B3", "C3", "D3", "E3", "F8", "G2"] },
+    { "name": "書熙", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G2"] },
+    { "name": "妍希", "tags": ["A1", "B1", "C7", "D1", "E2", "F8", "G1"] },
+    { "name": "希妍", "tags": ["A1", "B1", "C7", "D1", "E2", "F8", "G1"] },
+    { "name": "汐妍", "tags": ["A1", "B3", "C6", "D2", "E3", "F8", "G1"] },
+    { "name": "妍妍", "tags": ["A1", "A3", "B1", "C9", "D1", "E1", "F7", "G1"] },
+    { "name": "君妍", "tags": ["A1", "B3", "C1", "D4", "E3", "F8", "G1"] },
+    { "name": "沐妍", "tags": ["A1", "B1", "C2", "D2", "E2", "F8", "G1"] },
+    { "name": "若妍", "tags": ["A1", "B3", "C6", "D3", "E3", "F8", "G1"] },
+    { "name": "瑞妍", "tags": ["A1", "B1", "C1", "D4", "E3", "F7", "G1"] },
+    { "name": "欣妍", "tags": ["A1", "B1", "C2", "D1", "E2", "F7", "G1"] },
+    { "name": "知妍", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G1", "G10"] },
+    { "name": "思妍", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G1"] },
+    { "name": "墨妍", "tags": ["A1", "B3", "C6", "D4", "E3", "F8", "G1"] },
+    { "name": "初妍", "tags": ["A1", "B1", "C7", "D3", "E2", "F8", "G1"] },
+    { "name": "秀妍", "tags": ["A1", "B1", "C1", "D3", "E4", "F8", "G1"] },
+    { "name": "美妍", "tags": ["A1", "B1", "C3", "D1", "E3", "F7", "G1"] },
+    { "name": "瑾妍", "tags": ["A1", "B3", "C3", "D3", "E3", "F8", "G1"] },
+    { "name": "妍琪", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G1"] },
+    { "name": "書妍", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G1"] },
+    { "name": "星妍", "tags": ["A1", "B1", "C10", "D5", "E2", "F3", "F7", "G1"] },
+    { "name": "妍可", "tags": ["A1", "B1", "C9", "D1", "E2", "F7", "G1"] },
+    { "name": "沁妍", "tags": ["A1", "B1", "C7", "D2", "E2", "F8", "G1"] },
+    { "name": "妍愛", "tags": ["A1", "B1", "C4", "D1", "E2", "F7", "G1"] },
+    { "name": "簡妍", "tags": ["A1", "B3", "C6", "D3", "E3", "F8", "G1"] },
+    { "name": "許妍", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G1"] },
+    { "name": "徐妍", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G1"] },
+    { "name": "宥妍", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G1"] },
+    { "name": "安妍", "tags": ["A1", "B1", "C2", "D3", "E2", "F8", "G1"] },
+    { "name": "佐妍", "tags": ["A1", "B4", "C1", "D4", "E3", "F7", "G1"] },
+    { "name": "采妍", "tags": ["A1", "B1", "C2", "D1", "E2", "F8", "G1"] },
+    { "name": "芯妍", "tags": ["A1", "B1", "C9", "D1", "E1", "F2", "F7", "G1"] },
+    { "name": "芊妍", "tags": ["A1", "B3", "C7", "D1", "E2", "F2", "F8", "G1"] },
+    { "name": "舒妍", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G1"] },
+    { "name": "艾妍", "tags": ["A1", "B4", "C1", "D4", "E3", "F2", "F8", "G1"] },
+    { "name": "蘇妍", "tags": ["A1", "B3", "C3", "D3", "E3", "F8", "G1"] },
+    { "name": "凡妍", "tags": ["A1", "B3", "C2", "D3", "E2", "F8", "G1"] },
+    { "name": "萌妍", "tags": ["A1", "B1", "C9", "D1", "E1", "F7", "G1"] },
+    { "name": "晨妍", "tags": ["A1", "B1", "C2", "D5", "E2", "F7", "G1"] },
+    { "name": "芷妍", "tags": ["A1", "B3", "C6", "D2", "E3", "F2", "F8", "G1", "G10"] },
+    { "name": "夢妍", "tags": ["A1", "B1", "C4", "D1", "E2", "F8", "G1"] },
+    { "name": "熙妍", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G1", "G2"] },
+    { "name": "莉妍", "tags": ["A1", "B4", "C10", "D5", "E2", "F7", "G1", "G5"] },
+    { "name": "荷妍", "tags": ["A1", "B3", "C2", "D2", "E3", "F2", "F8", "G1"] },
+    { "name": "宣妍", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G1"] },
+    { "name": "歆妍", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G1"] },
+    { "name": "妍珠", "tags": ["A1", "B1", "C3", "D1", "E4", "F8", "G1"] },
+    { "name": "美延", "tags": ["A1", "B1", "C3", "D1", "E3", "F8"] },
+    { "name": "多恩", "tags": ["A1", "B1", "C9", "D1", "E2", "F7", "G3"] },
+    { "name": "世正", "tags": ["A1", "B1", "C1", "D4", "E3", "F7"] },
+    { "name": "有真", "tags": ["A1", "B1", "C2", "D3", "E2", "F7"] },
+    { "name": "敏知", "tags": ["A1", "B1", "C1", "D2", "E3", "F8", "G10"] },
+    { "name": "詩尹", "tags": ["A1", "B1", "C2", "D3", "E3", "F8"] },
+    { "name": "智希", "tags": ["A1", "B1", "C2", "D3", "E2", "F8", "G10"] },
+    { "name": "智娜", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G4", "G10"] },
+    { "name": "智允", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G7", "G10"] },
+    { "name": "智妮", "tags": ["A1", "B4", "C9", "D1", "E2", "F7", "G10"] },
+    { "name": "智拉", "tags": ["A1", "B4", "C1", "D4", "E3", "F7", "G10"] },
+    { "name": "智愛", "tags": ["A1", "B1", "C4", "D1", "E2", "F7", "G10"] },
+    { "name": "智珊", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G10"] },
+    { "name": "智雪", "tags": ["A1", "B3", "C6", "D3", "E3", "F3", "F8", "G10"] },
+    { "name": "智冬", "tags": ["A1", "B1", "C6", "D2", "E3", "F3", "F8", "G10"] },
+    { "name": "智彤", "tags": ["A1", "B1", "C2", "D5", "E2", "F7", "G10"] },
+    { "name": "智萌", "tags": ["A1", "B1", "C9", "D1", "E1", "F7", "G10"] },
+    { "name": "智汐", "tags": ["A1", "B3", "C6", "D2", "E3", "F8", "G10"] },
+    { "name": "智采", "tags": ["A1", "B1", "C2", "D3", "E2", "F8", "G10"] },
+    { "name": "恩智", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G3", "G10"] },
+    { "name": "熙智", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G2", "G10"] },
+    { "name": "妍智", "tags": ["A1", "B1", "C3", "D1", "E3", "F8", "G1", "G10"] },
+    { "name": "娜智", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G4", "G10"] },
+    { "name": "芯智", "tags": ["A1", "B1", "C2", "D3", "E2", "F2", "F8", "G10"] },
+    { "name": "沁智", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G10"] },
+    { "name": "夢智", "tags": ["A1", "B1", "C4", "D1", "E2", "F8", "G10"] },
+    { "name": "莉智", "tags": ["A1", "B4", "C3", "D1", "E3", "F8", "G5", "G10"] },
+    { "name": "雅智", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G9", "G10"] },
+    { "name": "允智", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G7", "G10"] },
+    { "name": "妮智", "tags": ["A1", "B4", "C9", "D1", "E2", "F7", "G10"] },
+    { "name": "拉智", "tags": ["A1", "B4", "C1", "D4", "E3", "F7", "G10"] },
+    { "name": "愛智", "tags": ["A1", "B1", "C4", "D1", "E2", "F7", "G10"] },
+    { "name": "珊智", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G10"] },
+    { "name": "雪智", "tags": ["A1", "B3", "C6", "D3", "E3", "F3", "F8", "G10"] },
+    { "name": "冬智", "tags": ["A1", "B1", "C6", "D2", "E3", "F3", "F8", "G10"] },
+    { "name": "彤智", "tags": ["A1", "B1", "C2", "D5", "E2", "F7", "G10"] },
+    { "name": "汐智", "tags": ["A1", "B3", "C6", "D2", "E3", "F8", "G10"] },
+    { "name": "采智", "tags": ["A1", "B1", "C2", "D3", "E2", "F8", "G10"] },
+    { "name": "秀恩", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G3"] },
+    { "name": "秀娜", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "秀雅", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G9"] },
+    { "name": "秀芯", "tags": ["A1", "B1", "C2", "D1", "E2", "F2", "F8"] },
+    { "name": "秀沁", "tags": ["A1", "B1", "C6", "D2", "E3", "F8"] },
+    { "name": "秀夢", "tags": ["A1", "B1", "C4", "D1", "E2", "F8"] },
+    { "name": "秀莉", "tags": ["A1", "B4", "C2", "D5", "E2", "F7", "G5"] },
+    { "name": "秀允", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G7"] },
+    { "name": "秀妮", "tags": ["A1", "B4", "C9", "D1", "E2", "F7"] },
+    { "name": "秀拉", "tags": ["A1", "B4", "C1", "D4", "E3", "F7"] },
+    { "name": "秀愛", "tags": ["A1", "B1", "C4", "D1", "E2", "F7"] },
+    { "name": "秀珊", "tags": ["A1", "B1", "C2", "D3", "E3", "F8"] },
+    { "name": "秀雪", "tags": ["A1", "B3", "C6", "D3", "E3", "F3", "F8"] },
+    { "name": "秀冬", "tags": ["A1", "B1", "C6", "D2", "E3", "F3", "F8"] },
+    { "name": "秀彤", "tags": ["A1", "B1", "C2", "D5", "E2", "F7"] },
+    { "name": "秀希", "tags": ["A1", "B1", "C2", "D3", "E2", "F8"] },
+    { "name": "秀萌", "tags": ["A1", "B1", "C9", "D1", "E1", "F7"] },
+    { "name": "秀汐", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "秀采", "tags": ["A1", "B1", "C2", "D3", "E2", "F8"] },
+    { "name": "恩秀", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G3"] },
+    { "name": "熙秀", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G2"] },
+    { "name": "妍秀", "tags": ["A1", "B1", "C3", "D1", "E3", "F8", "G1"] },
+    { "name": "娜秀", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "芯秀", "tags": ["A1", "B1", "C2", "D1", "E2", "F2", "F8"] },
+    { "name": "沁秀", "tags": ["A1", "B1", "C6", "D2", "E3", "F8"] },
+    { "name": "夢秀", "tags": ["A1", "B1", "C4", "D1", "E2", "F8"] },
+    { "name": "莉秀", "tags": ["A1", "B4", "C2", "D5", "E2", "F7", "G5"] },
+    { "name": "雅秀", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G9"] },
+    { "name": "允秀", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G7"] },
+    { "name": "妮秀", "tags": ["A1", "B4", "C9", "D1", "E2", "F7"] },
+    { "name": "拉秀", "tags": ["A1", "B4", "C1", "D4", "E3", "F7"] },
+    { "name": "愛秀", "tags": ["A1", "B1", "C4", "D1", "E2", "F7"] },
+    { "name": "珊秀", "tags": ["A1", "B1", "C2", "D3", "E3", "F8"] },
+    { "name": "雪秀", "tags": ["A1", "B3", "C6", "D3", "E3", "F3", "F8"] },
+    { "name": "冬秀", "tags": ["A1", "B1", "C6", "D2", "E3", "F3", "F8"] },
+    { "name": "彤秀", "tags": ["A1", "B1", "C2", "D5", "E2", "F7"] },
+    { "name": "汐秀", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "采秀", "tags": ["A1", "B1", "C2", "D3", "E2", "F8"] },
+    { "name": "惠敏", "tags": ["A1", "B1", "C1", "D2", "E4", "F8"] },
+    { "name": "雅娜", "tags": ["A1", "B4", "C10", "D5", "E2", "F7", "G4", "G9"] },
+    { "name": "雅芯", "tags": ["A1", "B1", "C3", "D1", "E2", "F2", "F8", "G9"] },
+    { "name": "素希", "tags": ["A1", "B1", "C7", "D3", "E2", "F8"] },
+    { "name": "彩希", "tags": ["A1", "B1", "C10", "D5", "E2", "F7"] },
+    { "name": "彩娜", "tags": ["A1", "B4", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "瑞娜", "tags": ["A1", "B4", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "歆雅", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G9"] },
+    { "name": "世敏", "tags": ["A1", "B1", "C2", "D3", "E3", "F8"] },
+    { "name": "宥熙", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G2"] },
+    { "name": "宥娜", "tags": ["A1", "B4", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "敏恩", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G3"] },
+    { "name": "敏熙", "tags": ["A1", "B1", "C3", "D2", "E3", "F8", "G2"] },
+    { "name": "敏妍", "tags": ["A1", "B1", "C3", "D1", "E3", "F8", "G1"] },
+    { "name": "沁妍", "tags": ["A1", "B3", "C7", "D2", "E2", "F8", "G1"] },
+    { "name": "芯雅", "tags": ["A1", "B1", "C3", "D1", "E2", "F2", "F8", "G9"] },
+    { "name": "芯蕾", "tags": ["A1", "B4", "C9", "D1", "E2", "F2", "F7"] },
+    { "name": "芷瑜", "tags": ["A1", "B3", "C2", "D3", "E3", "F2", "F8", "G8", "G10"] },
+    { "name": "孝利", "tags": ["A1", "B1", "C1", "D4", "E4", "F7"] },
+    { "name": "海莉", "tags": ["A1", "B4", "C10", "D5", "E2", "F7", "G5"] },
+    { "name": "允珠", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G7"] },
+    { "name": "允京", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G7"] },
+    { "name": "恩菲", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G3"] },
+    { "name": "多菲", "tags": ["A1", "B4", "C9", "D1", "E1", "F7"] },
+    { "name": "雪雅", "tags": ["A1", "B1", "C6", "D3", "E3", "F3", "F8", "G9"] },
+    { "name": "敏芝", "tags": ["A1", "B1", "C2", "D3", "E3", "F2", "F8"] },
+    { "name": "珠妍", "tags": ["A1", "B1", "C3", "D1", "E3", "F8", "G1"] },
+    { "name": "雅琳", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G9"] },
+    { "name": "雅菈", "tags": ["A1", "B4", "C10", "D5", "E2", "F7", "G9"] },
+    { "name": "娜京", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G4"] },
+    { "name": "恩京", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G3"] },
+    { "name": "彩莉", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G5"] },
+    { "name": "智琳", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G10"] },
+    { "name": "娜熙", "tags": ["A1", "B1", "C10", "D1", "E2", "F7", "G2", "G4"] },
+    { "name": "語京", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G8"] },
+    { "name": "宥莉", "tags": ["A1", "B1", "C2", "D3", "E2", "F8", "G5"] },
+    { "name": "詩媛", "tags": ["A1", "B1", "C3", "D3", "E3", "F8"] },
+    { "name": "麗娜", "tags": ["A1", "B4", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "叡娜", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "曦瑤", "tags": ["A1", "B3", "C3", "D5", "E3", "F8"] },
+    { "name": "蔓熙", "tags": ["A1", "B1", "C1", "D4", "E3", "F2", "F8", "G2"] },
+    { "name": "慧莉", "tags": ["A1", "B1", "C10", "D5", "E2", "F7", "G5"] },
+    { "name": "宋黛", "tags": ["A1", "B3", "C6", "D4", "E4", "F8"] },
+    { "name": "宋姜", "tags": ["A1", "B1", "C4", "D3", "E2", "F7"] },
+    { "name": "宋妍", "tags": ["A1", "B1", "C3", "D1", "E3", "F8", "G1"] },
+    { "name": "韓珍", "tags": ["A1", "B1", "C3", "D3", "E3", "F8"] },
+    { "name": "韓雪", "tags": ["A1", "B3", "C6", "D3", "E3", "F3", "F8"] },
+    { "name": "韓琳", "tags": ["A1", "B1", "C1", "D4", "E3", "F8"] },
+    { "name": "韓汐", "tags": ["A1", "B1", "C6", "D2", "E3", "F8"] },
+    { "name": "韓涵", "tags": ["A1", "B1", "C2", "D2", "E2", "F8"] },
+    { "name": "韓璐", "tags": ["A1", "B1", "C3", "D1", "E3", "F8"] },
+    { "name": "韓彬", "tags": ["A1", "B1", "C4", "D3", "E2", "F7"] },
+    { "name": "夏玥", "tags": ["A1", "B3", "C7", "D2", "E2", "F3", "F8"] },
+    { "name": "夏希", "tags": ["A1", "B2", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "夏桐", "tags": ["A1", "B3", "C6", "D2", "E3", "F2", "F3", "F8"] },
+    { "name": "姜雅", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G9"] },
+    { "name": "姜妍", "tags": ["A1", "B1", "C3", "D1", "E3", "F8", "G1"] },
+    { "name": "藝恩", "tags": ["A1", "B1", "C2", "D3", "E3", "F8"] },
+    { "name": "詩雅", "tags": ["A1", "B1", "C3", "D3", "E3", "F8", "G9"] },
+    { "name": "念慈", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "璐娜", "tags": ["A1", "B4", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "娜茵", "tags": ["A1", "B4", "C4", "D1", "E2", "F2", "F7", "G4"] },
+    { "name": "智泫", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G10"] },
+    { "name": "子葳", "tags": ["A1", "B3", "C2", "D3", "E2", "F2", "F8"] },
+    { "name": "韓薇", "tags": ["A1", "B1", "C1", "D4", "E3", "F2", "F8"] },
+    { "name": "可妍", "tags": ["A1", "B1", "C9", "D1", "E2", "F7", "G1"] },
+    { "name": "夏寶", "tags": ["A1", "C9", "D5", "E1", "F3", "F7"] },
+    { "name": "蕾娜", "tags": ["A1", "B4", "C1", "D4", "E3", "F2", "F7", "G4"] },
+    { "name": "依柔", "tags": ["A1", "B3", "C2", "D1", "E2", "F8"] },
+    { "name": "流寶", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "潔西", "tags": ["A1", "B4", "C10", "D5", "E2", "F7"] },
+    { "name": "潔兒", "tags": ["A1", "C9", "D3", "E1", "F7"] },
+    { "name": "芷若", "tags": ["A1", "B3", "C2", "D3", "E3", "F2", "F8", "G10"] },
+    { "name": "仙仙", "tags": ["A1", "A3", "B3", "C9", "D3", "E1", "F8"] },
+    { "name": "林凡", "tags": ["A1", "B3", "C4", "D2", "E3", "F8"] },
+    { "name": "夢晴", "tags": ["A1", "B3", "C2", "D2", "E2", "F8"] },
+    { "name": "米蘭", "tags": ["A1", "B4", "C1", "D4", "E3", "F5", "F7", "G6"] },
+    { "name": "林恩", "tags": ["A1", "B4", "C2", "D3", "E3", "F8", "G3"] },
+    { "name": "以凡", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "潘婷", "tags": ["A1", "B4", "C3", "D1", "E3", "F4", "F7"] },
+    { "name": "陳妍", "tags": ["A1", "B3", "C2", "D1", "E3", "F8", "G1"] },
+    { "name": "洛涵", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "泓雅", "tags": ["A1", "B3", "C3", "D3", "E3", "F8", "G9"] },
+    { "name": "周穎", "tags": ["A1", "B3", "C1", "D4", "E4", "F8"] },
+    { "name": "娜菲", "tags": ["A1", "B4", "C8", "D4", "E2", "F7", "G4"] },
+    { "name": "亞欣", "tags": ["A1", "B3", "C2", "D3", "E2", "F8", "G9"] },
+    { "name": "虞鹿", "tags": ["A1", "B3", "C4", "D2", "E2", "F1", "F8"] },
+    { "name": "佳佳", "tags": ["A1", "A3", "C2", "D1", "E2", "F7"] },
+    { "name": "陳安", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "周玥", "tags": ["A1", "B3", "C3", "D3", "E3", "F8"] },
+    { "name": "萬妮", "tags": ["A1", "B4", "C9", "D5", "E2", "F7"] },
+    { "name": "芯亞", "tags": ["A1", "B1", "C2", "D1", "E2", "F2", "F8", "G9"] },
+    { "name": "悠亞", "tags": ["A1", "B2", "C4", "D1", "E2", "F7", "G9"] },
+    { "name": "熱巴", "tags": ["A1", "B4", "C1", "D4", "E3", "F7"] },
+    { "name": "薇恩", "tags": ["A1", "B4", "C1", "D4", "E3", "F2", "F8", "G3"] },
+    { "name": "艾妍", "tags": ["A1", "B4", "C1", "D4", "E3", "F2", "F8", "G1"] },
+    { "name": "子甯", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "Mina", "tags": ["B4", "C3", "D3", "E3", "F8", "G6", "G4"] },
+    { "name": "vivi", "tags": ["A3", "B4", "C10", "D5", "E2", "F7"] },
+    { "name": "RITA", "tags": ["B4", "C1", "D4", "E3", "F7"] },
+    { "name": "EVA", "tags": ["B4", "C1", "D3", "E3", "F8"] },
+    { "name": "Liya", "tags": ["B4", "C3", "D1", "E2", "F7", "G5", "G9"] },
+    { "name": "楚楚", "tags": ["A1", "A3", "B3", "C4", "D1", "E2", "F8"] },
+    { "name": "依凌", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "雪芙", "tags": ["A1", "B3", "C3", "D3", "E3", "F3", "F8"] },
+    { "name": "艾薇", "tags": ["A1", "B4", "C1", "D4", "E3", "F2", "F8"] },
+    { "name": "麻依", "tags": ["A1", "B2", "C2", "D1", "E2", "F8"] },
+    { "name": "祖兒", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "捷語", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G8"] },
+    { "name": "沐歆", "tags": ["A1", "B3", "C2", "D2", "E2", "F8"] },
+    { "name": "喬安", "tags": ["A1", "B4", "C2", "D3", "E3", "F8"] },
+    { "name": "妍霏", "tags": ["A1", "B3", "C3", "D1", "E3", "F8", "G1"] },
+    { "name": "舒晴", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "智泫", "tags": ["A1", "B1", "C6", "D2", "E3", "F8", "G10"] },
+    { "name": "瑤卿", "tags": ["A1", "B3", "C3", "D3", "E3", "F8"] },
+    { "name": "錦書", "tags": ["A1", "B3", "C3", "D3", "E3", "F8"] },
+    { "name": "霓裳", "tags": ["A1", "B3", "C1", "D1", "E4", "F8"] },
+    { "name": "綰綰", "tags": ["A1", "A3", "B3", "C4", "D1", "E2", "F8"] },
+    { "name": "絳霜", "tags": ["A1", "B3", "C6", "D2", "E3", "F3", "F8"] },
+    { "name": "檀心", "tags": ["A1", "B3", "C2", "D3", "E3", "F2", "F8"] },
+    { "name": "鳶尾", "tags": ["A1", "B3", "C6", "D2", "E3", "F1", "F2", "F8"] },
+    { "name": "鸞鏡", "tags": ["A1", "B3", "C6", "D4", "E4", "F1", "F8"] },
+    { "name": "雲舒", "tags": ["A1", "B3", "C2", "D3", "E3", "F3", "F8"] },
+    { "name": "月見", "tags": ["A1", "B3", "C6", "D2", "E3", "F3", "F8"] },
+    { "name": "昭華", "tags": ["A1", "B3", "C3", "D5", "E4", "F8"] },
+    { "name": "長樂", "tags": ["A1", "B3", "C3", "D5", "E3", "F8"] },
+    { "name": "晚鶯", "tags": ["A1", "B3", "C6", "D4", "E4", "F1", "F8"] },
+    { "name": "映月", "tags": ["A1", "B3", "C2", "D3", "E3", "F3", "F8"] },
+    { "name": "知秋", "tags": ["A1", "B3", "C2", "D5", "E3", "F3", "F8", "G10"] },
+    { "name": "流霜", "tags": ["A1", "B3", "C6", "D2", "E3", "F3", "F8"] },
+    { "name": "凝脂", "tags": ["A1", "B3", "C4", "D3", "E3", "F8"] },
+    { "name": "半夏", "tags": ["A1", "B3", "C2", "D2", "E2", "F2", "F3", "F8"] },
+    { "name": "慕白", "tags": ["A1", "B3", "C6", "D3", "E3", "F8"] },
+    { "name": "沉魚", "tags": ["A1", "B3", "C3", "D2", "E3", "F1", "F8"] },
+    { "name": "落雁", "tags": ["A1", "B3", "C6", "D4", "E4", "F1", "F8"] },
+    { "name": "閉月", "tags": ["A1", "B3", "C6", "D4", "E4", "F3", "F8"] },
+    { "name": "羞花", "tags": ["A1", "B3", "C4", "D1", "E2", "F2", "F8"] },
+    { "name": "青黛", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "胭脂", "tags": ["A1", "B3", "C4", "D1", "E4", "F8"] },
+    { "name": "如玉", "tags": ["A1", "B3", "C3", "D3", "E3", "F8"] },
+    { "name": "如煙", "tags": ["A1", "B3", "C6", "D2", "E4", "F8"] },
+    { "name": "昭玥", "tags": ["A1", "B3", "C3", "D3", "E3", "F8"] },
+    { "name": "芊芊", "tags": ["A1", "A3", "B3", "C2", "D1", "E2", "F2", "F8"] },
+    { "name": "墨染", "tags": ["A1", "B3", "C6", "D4", "E4", "F8"] },
+    { "name": "疏影", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "冷鳶", "tags": ["A1", "B3", "C6", "D2", "E4", "F1", "F8"] },
+    { "name": "汐染", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "染染", "tags": ["A1", "A3", "B3", "C4", "D1", "E2", "F8"] },
+    { "name": "沁雪", "tags": ["A1", "B3", "C6", "D3", "E3", "F3", "F8"] },
+    { "name": "若水", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "微霜", "tags": ["A1", "B3", "C6", "D3", "E3", "F3", "F8"] },
+    { "name": "晚煙", "tags": ["A1", "B3", "C6", "D4", "E3", "F8"] },
+    { "name": "枕月", "tags": ["A1", "B3", "C6", "D2", "E3", "F3", "F8"] },
+    { "name": "尋梅", "tags": ["A1", "B3", "C2", "D1", "E3", "F2", "F8"] },
+    { "name": "妤沁", "tags": ["A1", "B3", "C2", "D2", "E2", "F8", "G8"] },
+    { "name": "初晴", "tags": ["A1", "B3", "C7", "D3", "E2", "F3", "F7"] },
+    { "name": "雲月", "tags": ["A1", "B3", "C2", "D3", "E3", "F3", "F8"] },
+    { "name": "素心", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "寒煙", "tags": ["A1", "B3", "C6", "D2", "E4", "F8"] },
+    { "name": "幽蘭", "tags": ["A1", "B3", "C6", "D4", "E4", "F2", "F8"] },
+    { "name": "淺黛", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "淺若", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "浮夢", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "南笙", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "舒荷", "tags": ["A1", "B3", "C2", "D3", "E3", "F2", "F8"] },
+    { "name": "洛妍", "tags": ["A1", "B3", "C6", "D2", "E3", "F8", "G1"] },
+    { "name": "知意", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G10"] },
+    { "name": "汐瑤", "tags": ["A1", "B3", "C3", "D2", "E3", "F8"] },
+    { "name": "熙瑤", "tags": ["A1", "B3", "C3", "D3", "E3", "F8", "G2"] },
+    { "name": "芷璇", "tags": ["A1", "B3", "C3", "D3", "E3", "F2", "F8", "G10"] },
+    { "name": "璟汐", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "璟熙", "tags": ["A1", "B3", "C1", "D4", "E3", "F8", "G2"] },
+    { "name": "舒寧", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "思妤", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G8"] },
+    { "name": "思安", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "錦意", "tags": ["A1", "B3", "C3", "D3", "E3", "F8"] },
+    { "name": "詩婉", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "舒宜", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "舒妍", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G1"] },
+    { "name": "晚清", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "昔念", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "知夏", "tags": ["A1", "B3", "C10", "D5", "E2", "F3", "F7", "G10"] },
+    { "name": "洛寧", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "舒錦", "tags": ["A1", "B3", "C3", "D3", "E3", "F8"] },
+    { "name": "知尹", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G10"] },
+    { "name": "諾瑤", "tags": ["A1", "B3", "C3", "D1", "E2", "F8"] },
+    { "name": "若瑤", "tags": ["A1", "B3", "C3", "D1", "E3", "F8"] },
+    { "name": "晚意", "tags": ["A1", "B3", "C6", "D4", "E3", "F8"] },
+    { "name": "語初", "tags": ["A1", "B3", "C7", "D3", "E2", "F8", "G8"] },
+    { "name": "洛桅", "tags": ["A1", "B3", "C6", "D2", "E3", "F8"] },
+    { "name": "舒妤", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G8"] },
+    { "name": "念可", "tags": ["A1", "B3", "C9", "D1", "E2", "F7"] },
+    { "name": "婉若", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "靜宜", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "薇蘭", "tags": ["A1", "B3", "C3", "D3", "E3", "F2", "F8"] },
+    { "name": "楚妍", "tags": ["A1", "B3", "C4", "D1", "E2", "F8", "G1"] },
+    { "name": "黎梨", "tags": ["A1", "B3", "C2", "D5", "E2", "F2", "F8", "G5"] },
+    { "name": "琉璃", "tags": ["A1", "B3", "C6", "D2", "E3", "F8", "G5"] },
+    { "name": "采依", "tags": ["A1", "B3", "C2", "D1", "E2", "F8"] },
+    { "name": "彩蝶", "tags": ["A1", "B3", "C10", "D5", "E2", "F1", "F7"] },
+    { "name": "靜雅", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G9"] },
+    { "name": "露亞", "tags": ["A1", "B4", "C1", "D4", "E3", "F8", "G9"] },
+    { "name": "雅夢", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G9"] },
+    { "name": "莎楠", "tags": ["A1", "B4", "C1", "D4", "E3", "F8"] },
+    { "name": "熙宥", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G2"] },
+    { "name": "嘉寧", "tags": ["A1", "B3", "C3", "D3", "E3", "F8"] },
+    { "name": "璦璃", "tags": ["A1", "B3", "C3", "D2", "E3", "F8", "G5"] },
+    { "name": "安婕", "tags": ["A1", "B4", "C3", "D3", "E3", "F8"] },
+    { "name": "安娜", "tags": ["A1", "B4", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "安妮", "tags": ["A1", "B4", "C9", "D1", "E2", "F7"] },
+    { "name": "安希", "tags": ["A1", "B4", "C2", "D3", "E2", "F7"] },
+    { "name": "安雅", "tags": ["A1", "B4", "C3", "D3", "E3", "F8", "G9"] },
+    { "name": "梓安", "tags": ["A1", "B3", "C2", "D3", "E3", "F2", "F8"] },
+    { "name": "安然", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "安婉", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "安若", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "安芷", "tags": ["A1", "B3", "C2", "D3", "E3", "F2", "F8", "G10"] },
+    { "name": "安琳", "tags": ["A1", "B4", "C1", "D4", "E3", "F8"] },
+    { "name": "可安", "tags": ["A1", "B3", "C9", "D1", "E2", "F7"] },
+    { "name": "可欣", "tags": ["A1", "B3", "C2", "D1", "E2", "F7"] },
+    { "name": "沐妍", "tags": ["A1", "B3", "C2", "D2", "E2", "F8", "G1"] },
+    { "name": "孟潔", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "孟娜", "tags": ["A1", "B4", "C1", "D4", "E3", "F7", "G4"] },
+    { "name": "孟琪", "tags": ["A1", "B3", "C2", "D3", "E2", "F7"] },
+    { "name": "孟莉", "tags": ["A1", "B4", "C1", "D4", "E3", "F7", "G5"] },
+    { "name": "孟欣", "tags": ["A1", "B3", "C2", "D1", "E2", "F7"] },
+    { "name": "孟穎", "tags": ["A1", "B3", "C1", "D4", "E3", "F8"] },
+    { "name": "語安", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G8"] },
+    { "name": "語嫣", "tags": ["A1", "B3", "C3", "D1", "E3", "F8", "G8"] },
+    { "name": "語涵", "tags": ["A1", "B3", "C2", "D2", "E3", "F8", "G8"] },
+    { "name": "語冰", "tags": ["A1", "B3", "C6", "D2", "E3", "F8", "G8"] },
+    { "name": "語欣", "tags": ["A1", "B3", "C2", "D1", "E2", "F8", "G8"] },
+    { "name": "語柔", "tags": ["A1", "B3", "C4", "D1", "E2", "F8", "G8"] },
+    { "name": "語彤", "tags": ["A1", "B3", "C2", "D5", "E2", "F8", "G8"] },
+    { "name": "語玹", "tags": ["A1", "B3", "C6", "D2", "E3", "F8", "G8"] },
+    { "name": "嫣然", "tags": ["A1", "B3", "C3", "D1", "E3", "F8"] },
+    { "name": "雅涵", "tags": ["A1", "B3", "C3", "D3", "E3", "F8", "G9"] },
+    { "name": "瑪熙", "tags": ["A1", "B4", "C1", "D4", "E3", "F8", "G2"] },
+    { "name": "玖璇", "tags": ["A1", "B3", "C6", "D4", "E3", "F8"] },
+    { "name": "欣如", "tags": ["A1", "B3", "C2", "D1", "E2", "F8"] },
+    { "name": "茉莉", "tags": ["A1", "B2", "C7", "D3", "E2", "F2", "F6", "F7", "G5"] },
+    { "name": "莫莉", "tags": ["A1", "B4", "C1", "D4", "E3", "F2", "F8", "G5"] },
+    { "name": "夏夜", "tags": ["A1", "B3", "C6", "D4", "E3", "F3", "F8"] },
+    { "name": "海棠", "tags": ["A1", "B3", "C3", "D1", "E3", "F2", "F8"] },
+    { "name": "念玖", "tags": ["A1", "B3", "C2", "D3", "E3", "F8"] },
+    { "name": "琴酒", "tags": ["A1", "B4", "C6", "D4", "E4", "F6", "F8"] },
+    { "name": "諾恩", "tags": ["A1", "B4", "C1", "D4", "E3", "F8", "G3"] },
+    { "name": "梓緣", "tags": ["A1", "B3", "C2", "D3", "E3", "F2", "F8"] },
+    { "name": "方圓", "tags": ["A1", "B3", "C9", "D5", "E2", "F7"] },
+    { "name": "明月", "tags": ["A1", "B3", "C3", "D3", "E3", "F3", "F8"] },
+    { "name": "祈琪", "tags": ["A1", "B3", "C2", "D3", "E2", "F8"] },
+    { "name": "伊芙", "tags": ["A1", "B4", "C3", "D3", "E3", "F8"] },
+    { "name": "曦瑤", "tags": ["A1", "B3", "C3", "D5", "E3", "F8"] },
+    { "name": "璐瑤", "tags": ["A1", "B3", "C3", "D1", "E3", "F8"] },
+    { "name": "關穎", "tags": ["A1", "B3", "C1", "D4", "E4", "F8"] },
+    { "name": "南熙", "tags": ["A1", "B3", "C6", "D4", "E3", "F8", "G2"] },
+    { "name": "思瑤", "tags": ["A1", "B3", "C2", "D1", "E3", "F8"] },
+    { "name": "景瑜", "tags": ["A1", "B3", "C2", "D3", "E3", "F8", "G8"] },
+    { "name": "江雪", "tags": ["A1", "B3", "C6", "D3", "E3", "F3", "F8"] },
+    { "name": "向陽", "tags": ["A1", "B3", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "璐怡", "tags": ["A1", "B3", "C3", "D1", "E3", "F8"] },
+    { "name": "梓嫣", "tags": ["A1", "B3", "C3", "D1", "E3", "F2", "F8"] },
+    { "name": "山茶", "tags": ["A1", "B3", "C4", "D3", "E3", "F2", "F6", "F8"] },
+    { "name": "白茶", "tags": ["A1", "B3", "C6", "D3", "E3", "F2", "F6", "F8"] },
+    { "name": "柔伊", "tags": ["A1", "B4", "C4", "D1", "E2", "F8"] },
+    { "name": "水晶", "tags": ["A1", "B4", "C6", "D3", "E3", "F8"] },
+    { "name": "依苒", "tags": ["A1", "B3", "C2", "D3", "E3", "F2", "F8"] },
+    { "name": "雪兒", "tags": ["A1", "B3", "C9", "D3", "E2", "F3", "F7"] },
+    { "name": "雪雪", "tags": ["A1", "A3", "B3", "C9", "D3", "E1", "F3", "F7"] },
+    { "name": "雪梨", "tags": ["A1", "B4", "C10", "D5", "E2", "F3", "F5", "F6", "F7", "G5"] },
+    { "name": "依雪", "tags": ["A1", "B3", "C6", "D3", "E3", "F3", "F8"] },
+    { "name": "雪棠", "tags": ["A1", "B3", "C6", "D3", "E3", "F2", "F3", "F8"] },
+    { "name": "星兒", "tags": ["A1", "B3", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "晨星", "tags": ["A1", "B3", "C2", "D5", "E2", "F3", "F7"] },
+    { "name": "星辰", "tags": ["A1", "B3", "C6", "D2", "E3", "F3", "F8"] },
+    { "name": "依晨", "tags": ["A1", "B3", "C2", "D3", "E3", "F3", "F8"] },
+    { "name": "繁星", "tags": ["A1", "B3", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "星璇", "tags": ["A1", "B3", "C6", "D2", "E3", "F3", "F8"] },
+    { "name": "星妍", "tags": ["A1", "B1", "C10", "D5", "E2", "F3", "F7", "G1"] },
+    { "name": "星雅", "tags": ["A1", "B3", "C3", "D3", "E3", "F3", "F8", "G9"] },
+    { "name": "夏雪", "tags": ["A1", "B3", "C6", "D3", "E3", "F3", "F8"] },
+    { "name": "夏冬", "tags": ["A1", "B3", "C6", "D2", "E3", "F3", "F8"] },
+    { "name": "流星", "tags": ["A1", "B3", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "天心", "tags": ["A1", "B3", "C3", "D3", "E3", "F8"] },
+    { "name": "初夏", "tags": ["A1", "B3", "C7", "D3", "E2", "F3", "F8"] },
+    { "name": "流螢", "tags": ["A1", "B3", "C2", "D5", "E2", "F1", "F8"] },
+    { "name": "楊穎", "tags": ["A1", "B3", "C1", "D4", "E4", "F8"] },
+    { "name": "柚柚", "tags": ["A1", "A3", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "柚子", "tags": ["A1", "B2", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "西柚", "tags": ["A1", "C10", "D1", "E2", "F2", "F6", "F7"] },
+    { "name": "青柚", "tags": ["A1", "C2", "D5", "E2", "F2", "F6", "F8"] },
+    { "name": "沁柚", "tags": ["A1", "B3", "C7", "D2", "E2", "F2", "F6", "F8"] },
+    { "name": "櫻櫻", "tags": ["A1", "A3", "B2", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "櫻桃", "tags": ["A1", "C10", "D1", "E2", "F2", "F6", "F7"] },
+    { "name": "莓莓", "tags": ["A1", "A3", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "草莓", "tags": ["A1", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "藍莓", "tags": ["A1", "C6", "D2", "E3", "F2", "F6", "F8"] },
+    { "name": "蔓莓", "tags": ["A1", "C4", "D1", "E2", "F2", "F6", "F8"] },
+    { "name": "蔓蔓", "tags": ["A1", "A3", "C2", "D5", "E2", "F2", "F8"] },
+    { "name": "荔枝", "tags": ["A1", "C10", "D1", "E2", "F2", "F6", "F7"] },
+    { "name": "荔兒", "tags": ["A1", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "桃桃", "tags": ["A1", "A3", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "桃子", "tags": ["A1", "B2", "C10", "D1", "E2", "F2", "F6", "F7"] },
+    { "name": "水桃", "tags": ["A1", "C4", "D1", "E2", "F2", "F6", "F7"] },
+    { "name": "蜜桃", "tags": ["A1", "C4", "D1", "E3", "F2", "F6", "F7", "G6"] },
+    { "name": "梨梨", "tags": ["A1", "A3", "C9", "D3", "E1", "F2", "F6", "F8", "G5"] },
+    { "name": "梨兒", "tags": ["A1", "C9", "D3", "E1", "F2", "F6", "F8", "G5"] },
+    { "name": "青檸", "tags": ["A1", "C7", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "檸檸", "tags": ["A1", "A3", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "檸兒", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "萊姆", "tags": ["A1", "B4", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "葡萄", "tags": ["A1", "C10", "D2", "E2", "F2", "F6", "F7"] },
+    { "name": "提子", "tags": ["A1", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "果果", "tags": ["A1", "A3", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "棠棠", "tags": ["A1", "A3", "C2", "D1", "E2", "F2", "F7"] },
+    { "name": "李兒", "tags": ["A1", "C2", "D5", "E2", "F2", "F7"] },
+    { "name": "橙子", "tags": ["A1", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "橙兒", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "橙心", "tags": ["A1", "C2", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "蜜柑", "tags": ["A1", "B2", "C10", "D5", "E2", "F2", "F6", "F7", "G6"] },
+    { "name": "柑柑", "tags": ["A1", "A3", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "芒芒", "tags": ["A1", "A3", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "芒果", "tags": ["A1", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "杏兒", "tags": ["A1", "C2", "D5", "E2", "F2", "F6", "F8"] },
+    { "name": "杏杏", "tags": ["A1", "A3", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "杏子", "tags": ["A1", "B2", "C10", "D5", "E2", "F2", "F6", "F8"] },
+    { "name": "柿兒", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "柿柿", "tags": ["A1", "A3", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "椰子", "tags": ["A1", "C10", "D3", "E2", "F2", "F6", "F7"] },
+    { "name": "椰椰", "tags": ["A1", "A3", "C9", "D3", "E1", "F2", "F6", "F7"] },
+    { "name": "桑葚", "tags": ["A1", "C6", "D4", "E3", "F2", "F6", "F8"] },
+    { "name": "桑桑", "tags": ["A1", "A3", "C2", "D5", "E2", "F2", "F8"] },
+    { "name": "布丁", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "泡芙", "tags": ["A1", "C9", "D1", "E1", "F6", "F7"] },
+    { "name": "慕斯", "tags": ["A1", "C3", "D3", "E3", "F6", "F8"] },
+    { "name": "奶凍", "tags": ["A1", "C9", "D3", "E1", "F6", "F8"] },
+    { "name": "奶酪", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "奶昔", "tags": ["A1", "C9", "D1", "E1", "F6", "F7"] },
+    { "name": "戚風", "tags": ["A1", "C2", "D3", "E3", "F6", "F8"] },
+    { "name": "可可", "tags": ["A1", "A3", "B4", "C9", "D4", "E1", "F6", "F7"] },
+    { "name": "大福", "tags": ["A1", "B2", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "麻糬", "tags": ["A1", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "糰子", "tags": ["A1", "B2", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "班戟", "tags": ["A1", "C10", "D5", "E2", "F6", "F7"] },
+    { "name": "蘇芙", "tags": ["A1", "C3", "D1", "E3", "F6", "F8"] },
+    { "name": "舒芙", "tags": ["A1", "C3", "D1", "E3", "F6", "F8"] },
+    { "name": "蕾兒", "tags": ["A1", "C9", "D1", "E2", "F6", "F7"] },
+    { "name": "布蕾", "tags": ["A1", "C3", "D5", "E2", "F6", "F7"] },
+    { "name": "塔塔", "tags": ["A1", "A3", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "派派", "tags": ["A1", "A3", "C10", "D5", "E1", "F6", "F7"] },
+    { "name": "鬆餅", "tags": ["A1", "C10", "D5", "E2", "F6", "F7"] },
+    { "name": "曲奇", "tags": ["A1", "C10", "D5", "E2", "F6", "F7"] },
+    { "name": "薄餅", "tags": ["A1", "C2", "D5", "E2", "F6", "F8"] },
+    { "name": "奶蓋", "tags": ["A1", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "拿鐵", "tags": ["A1", "B4", "C2", "D4", "E3", "F6", "F8"] },
+    { "name": "摩卡", "tags": ["A1", "B4", "C1", "D4", "E3", "F6", "F8"] },
+    { "name": "歐蕾", "tags": ["A1", "B4", "C2", "D3", "E2", "F6", "F8"] },
+    { "name": "司康", "tags": ["A1", "B4", "C2", "D5", "E3", "F6", "F8"] },
+    { "name": "貝果", "tags": ["A1", "C10", "D5", "E2", "F6", "F7"] },
+    { "name": "可露", "tags": ["A1", "C3", "D4", "E3", "F6", "F8"] },
+    { "name": "麗露", "tags": ["A1", "C3", "D4", "E3", "F6", "F8"] },
+    { "name": "瑪德", "tags": ["A1", "B4", "C1", "D4", "E3", "F6", "F8"] },
+    { "name": "蓮兒", "tags": ["A1", "C2", "D5", "E2", "F6", "F8"] },
+    { "name": "瑪芬", "tags": ["A1", "B4", "C10", "D5", "E2", "F6", "F7"] },
+    { "name": "布朗", "tags": ["A1", "B4", "C1", "D4", "E3", "F6", "F8"] },
+    { "name": "尼兒", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "波波", "tags": ["A1", "A3", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "波露", "tags": ["A1", "C2", "D2", "E2", "F6", "F8"] },
+    { "name": "酥酥", "tags": ["A1", "A3", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "小酥", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "酥兒", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "香草", "tags": ["A1", "C7", "D3", "E2", "F2", "F6", "F8"] },
+    { "name": "薄荷", "tags": ["A1", "C6", "D2", "E3", "F2", "F6", "F8"] },
+    { "name": "荷兒", "tags": ["A1", "C2", "D2", "E2", "F2", "F6", "F8"] },
+    { "name": "抹茶", "tags": ["A1", "B2", "C6", "D5", "E3", "F6", "F8"] },
+    { "name": "蘇打", "tags": ["A1", "C10", "D2", "E2", "F6", "F7"] },
+    { "name": "汽水", "tags": ["A1", "C10", "D5", "E2", "F6", "F7"] },
+    { "name": "鹽鹽", "tags": ["A1", "A3", "C4", "D3", "E2", "F6", "F8"] },
+    { "name": "可口", "tags": ["A1", "C9", "D1", "E1", "F6", "F7"] },
+    { "name": "沁檸", "tags": ["A1", "C7", "D5", "E2", "F2", "F6", "F8"] },
+    { "name": "沐橙", "tags": ["A1", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "沐梨", "tags": ["A1", "C2", "D3", "E2", "F2", "F6", "F8", "G5"] },
+    { "name": "清柚", "tags": ["A1", "B2", "C6", "D5", "E3", "F2", "F6", "F8"] },
+    { "name": "寒天", "tags": ["A1", "B2", "C6", "D3", "E3", "F6", "F8"] },
+    { "name": "仙草", "tags": ["A1", "B3", "C2", "D4", "E3", "F2", "F6", "F8"] },
+    { "name": "烏龍", "tags": ["A1", "C6", "D4", "E4", "F6", "F8"] },
+    { "name": "茶茶", "tags": ["A1", "A3", "B2", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "茉兒", "tags": ["A1", "C2", "D3", "E2", "F2", "F6", "F8"] },
+    { "name": "花茶", "tags": ["A1", "C2", "D1", "E3", "F2", "F6", "F8"] },
+    { "name": "露露", "tags": ["A1", "A3", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "露兒", "tags": ["A1", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "沁沁", "tags": ["A1", "A3", "C2", "D2", "E2", "F6", "F8"] },
+    { "name": "沁兒", "tags": ["A1", "C2", "D2", "E2", "F6", "F8"] },
+    { "name": "泡泡", "tags": ["A1", "A3", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "珠珠", "tags": ["A1", "A3", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "奶茶", "tags": ["A1", "C5", "D5", "E2", "F6", "F7"] },
+    { "name": "美式", "tags": ["A1", "C1", "D4", "E4", "F6", "F8"] },
+    { "name": "蜜糖", "tags": ["A1", "C4", "D5", "E2", "F6", "F7", "G6"] },
+    { "name": "糖糖", "tags": ["A1", "A3", "C9", "D1", "E1", "F6", "F7"] },
+    { "name": "黑糖", "tags": ["A1", "C1", "D4", "E3", "F6", "F8"] },
+    { "name": "白糖", "tags": ["A1", "C7", "D3", "E2", "F6", "F8"] },
+    { "name": "冰糖", "tags": ["A1", "C6", "D3", "E3", "F6", "F8"] },
+    { "name": "焦糖", "tags": ["A1", "C4", "D4", "E3", "F6", "F8"] },
+    { "name": "楓糖", "tags": ["A1", "C2", "D5", "E3", "F6", "F8"] },
+    { "name": "蜂蜜", "tags": ["A1", "C10", "D5", "E2", "F6", "F7", "G6"] },
+    { "name": "蜜兒", "tags": ["A1", "C9", "D1", "E1", "F6", "F7", "G6"] },
+    { "name": "蜜蜜", "tags": ["A1", "A3", "C9", "D1", "E1", "F6", "F7", "G6"] },
+    { "name": "糖兒", "tags": ["A1", "C9", "D1", "E1", "F6", "F7"] },
+    { "name": "糖芯", "tags": ["A1", "C4", "D1", "E2", "F6", "F7"] },
+    { "name": "糖希", "tags": ["A1", "C7", "D1", "E2", "F6", "F7"] },
+    { "name": "糖朵", "tags": ["A1", "C9", "D1", "E1", "F6", "F7"] },
+    { "name": "糖琪", "tags": ["A1", "C10", "D5", "E2", "F6", "F7"] },
+    { "name": "糖悅", "tags": ["A1", "C2", "D1", "E2", "F6", "F8"] },
+    { "name": "砂糖", "tags": ["A1", "B2", "C10", "D3", "E2", "F6", "F7"] },
+    { "name": "肉桂", "tags": ["A1", "C6", "D4", "E4", "F2", "F6", "F8"] },
+    { "name": "桂桂", "tags": ["A1", "A3", "C2", "D5", "E2", "F2", "F6", "F8"] },
+    { "name": "桂兒", "tags": ["A1", "C2", "D5", "E2", "F2", "F6", "F8"] },
+    { "name": "茴香", "tags": ["A1", "B3", "C6", "D2", "E4", "F2", "F6", "F8"] },
+    { "name": "丁香", "tags": ["A1", "B3", "C2", "D1", "E3", "F2", "F6", "F8"] },
+    { "name": "羅勒", "tags": ["A1", "B4", "C1", "D4", "E4", "F2", "F6", "F8"] },
+    { "name": "迷迭", "tags": ["A1", "C6", "D4", "E4", "F2", "F6", "F8"] },
+    { "name": "肉蔻", "tags": ["A1", "C6", "D4", "E4", "F2", "F6", "F8"] },
+    { "name": "香黛", "tags": ["A1", "C3", "D4", "E4", "F6", "F8"] },
+    { "name": "蜜思", "tags": ["A1", "B4", "C3", "D1", "E3", "F6", "F8", "G6"] },
+    { "name": "糖梔", "tags": ["A1", "C7", "D3", "E2", "F2", "F6", "F8"] },
+    { "name": "蜜薰", "tags": ["A1", "B2", "C4", "D2", "E3", "F6", "F8", "G6"] },
+    { "name": "米粉", "tags": ["A1", "C5", "D3", "E2", "F6", "F7", "G6"] },
+    { "name": "冬粉", "tags": ["A1", "C10", "D3", "E2", "F6", "F7"] },
+    { "name": "西瓜", "tags": ["A1", "C5", "D1", "E2", "F6", "F7"] },
+    { "name": "米粒", "tags": ["A1", "C9", "D3", "E1", "F6", "F7", "G6"] },
+    { "name": "優格", "tags": ["A1", "C2", "D3", "E3", "F6", "F8"] },
+    { "name": "綠茶", "tags": ["A1", "C4", "D2", "E3", "F6", "F8"] },
+    { "name": "辣椒", "tags": ["A1", "C8", "D1", "E3", "F6", "F7"] },
+    { "name": "吐司", "tags": ["A1", "C2", "D3", "E2", "F6", "F8"] },
+    { "name": "冬瓜", "tags": ["A1", "C5", "D5", "E2", "F6", "F7"] },
+    { "name": "地瓜", "tags": ["A1", "C5", "D5", "E2", "F6", "F7"] },
+    { "name": "湯圓", "tags": ["A1", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "栗子", "tags": ["A1", "B2", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "糯米", "tags": ["A1", "C9", "D3", "E1", "F6", "F7", "G6"] },
+    { "name": "香菜", "tags": ["A1", "C8", "D2", "E3", "F6", "F7"] },
+    { "name": "芝士", "tags": ["A1", "C10", "D5", "E2", "F6", "F7"] },
+    { "name": "奶油", "tags": ["A1", "C4", "D5", "E2", "F6", "F7"] },
+    { "name": "奶綠", "tags": ["A1", "C7", "D2", "E2", "F6", "F8"] },
+    { "name": "芋泥", "tags": ["A1", "C9", "D4", "E1", "F6", "F7"] },
+    { "name": "果醬", "tags": ["A1", "C10", "D1", "E2", "F6", "F7"] },
+    { "name": "果凍", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "泡菜", "tags": ["A1", "C8", "D1", "E3", "F6", "F7"] },
+    { "name": "可樂", "tags": ["A1", "C10", "D4", "E2", "F6", "F7"] },
+    { "name": "椰果", "tags": ["A1", "C10", "D3", "E2", "F6", "F7"] },
+    { "name": "豆芽", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "雪餅", "tags": ["A1", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "糖果", "tags": ["A1", "C10", "D1", "E1", "F6", "F7"] },
+    { "name": "軟糖", "tags": ["A1", "C9", "D1", "E1", "F6", "F7"] },
+    { "name": "奶糖", "tags": ["A1", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "西米露", "tags": ["A2", "C9", "D3", "E2", "F6", "F7", "G6"] },
+    { "name": "金莎", "tags": ["A1", "B4", "C3", "D5", "E3", "F4", "F6", "F8"] },
+    { "name": "小籠包", "tags": ["A2", "C5", "D3", "E1", "F6", "F7"] },
+    { "name": "煉乳", "tags": ["A1", "C4", "D3", "E2", "F6", "F8"] },
+    { "name": "麥香", "tags": ["A1", "C2", "D5", "E2", "F6", "F8"] },
+    { "name": "麥芽", "tags": ["A1", "C10", "D5", "E2", "F6", "F7"] },
+    { "name": "巧克力", "tags": ["A2", "C8", "D4", "E2", "F6", "F7"] },
+    { "name": "包子", "tags": ["A1", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "泡麵", "tags": ["A1", "C5", "D5", "E2", "F6", "F7"] },
+    { "name": "丸子", "tags": ["A1", "B2", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "水蜜桃", "tags": ["A2", "C4", "D1", "E2", "F2", "F6", "F7", "G6"] },
+    { "name": "糖霜", "tags": ["A1", "C3", "D3", "E3", "F6", "F8"] },
+    { "name": "Prada", "tags": ["B4", "C6", "D4", "E4", "F4", "F8"] },
+    { "name": "Barbara", "tags": ["B4", "C1", "D4", "E4", "F8"] },
+    { "name": "櫻子", "tags": ["A1", "B2", "C2", "D1", "E2", "F2", "F8"] },
+    { "name": "繪里", "tags": ["A1", "B2", "C2", "D2", "E2", "F8"] },
+    { "name": "梨繪", "tags": ["A1", "B2", "C2", "D3", "E2", "F2", "F8", "G5"] },
+    { "name": "美奈", "tags": ["A1", "B2", "C2", "D1", "E2", "F8", "G4"] },
+    { "name": "奈穗", "tags": ["A1", "B2", "C2", "D5", "E3", "F2", "F8", "G4"] },
+    { "name": "葵依", "tags": ["A1", "B2", "C2", "D2", "E2", "F2", "F8"] },
+    { "name": "詩織", "tags": ["A1", "B2", "C3", "D3", "E3", "F8"] },
+    { "name": "乃愛", "tags": ["A1", "B2", "C9", "D1", "E1", "F7"] },
+    { "name": "萌惠", "tags": ["A1", "B2", "C9", "D1", "E2", "F7"] },
+    { "name": "遙香", "tags": ["A1", "B2", "C2", "D3", "E3", "F8"] },
+    { "name": "薰子", "tags": ["A1", "B2", "C3", "D4", "E3", "F2", "F8"] },
+    { "name": "穗乃", "tags": ["A1", "B2", "C2", "D5", "E2", "F2", "F8"] },
+    { "name": "美咲", "tags": ["A1", "B2", "C7", "D1", "E2", "F8"] },
+    { "name": "千尋", "tags": ["A1", "B2", "C6", "D2", "E3", "F8"] },
+    { "name": "由奈", "tags": ["A1", "B2", "C2", "D3", "E2", "F8", "G4"] },
+    { "name": "由真", "tags": ["A1", "B2", "C2", "D3", "E3", "F8"] },
+    { "name": "愛子", "tags": ["A1", "B2", "C9", "D1", "E1", "F7"] },
+    { "name": "莉子", "tags": ["A1", "B2", "C10", "D5", "E2", "F7", "G5"] },
+    { "name": "桃惠", "tags": ["A1", "B2", "C9", "D1", "E2", "F2", "F8"] },
+    { "name": "奈央", "tags": ["A1", "B2", "C2", "D3", "E3", "F8", "G4"] },
+    { "name": "真由", "tags": ["A1", "B2", "C2", "D3", "E3", "F8"] },
+    { "name": "里穗", "tags": ["A1", "B2", "C2", "D5", "E3", "F2", "F8"] },
+    { "name": "明日", "tags": ["A1", "B2", "C10", "D5", "E2", "F7"] },
+    { "name": "咲良", "tags": ["A1", "B2", "C7", "D1", "E2", "F8"] },
+    { "name": "芽衣", "tags": ["A1", "B2", "C9", "D5", "E1", "F2", "F7"] },
+    { "name": "結衣", "tags": ["A1", "B2", "C7", "D3", "E2", "F8"] },
+    { "name": "七海", "tags": ["A1", "B2", "C2", "D2", "E2", "F8"] },
+    { "name": "陽葵", "tags": ["A1", "B2", "C10", "D5", "E2", "F2", "F7"] },
+    { "name": "栞奈", "tags": ["A1", "B2", "C2", "D3", "E3", "F8", "G4"] },
+    { "name": "柳奈", "tags": ["A1", "B2", "C2", "D3", "E3", "F2", "F8", "G4"] },
+    { "name": "柳娜", "tags": ["A1", "B4", "C1", "D4", "E3", "F2", "F8", "G4"] },
+    { "name": "琉妍", "tags": ["A1", "B3", "C6", "D2", "E3", "F8", "G1"] },
+    { "name": "麻依", "tags": ["A1", "B2", "C2", "D3", "E2", "F8"] },
+    { "name": "波多", "tags": ["A1", "B2", "C4", "D2", "E3", "F8"] },
+    { "name": "明日香", "tags": ["A2", "B2", "C7", "D5", "E2", "F8"] },
+    { "name": "Yuki", "tags": ["B2", "B4", "C9", "D3", "E1", "F3", "F8"] },
+    { "name": "Yumi", "tags": ["B2", "B4", "C9", "D1", "E1", "F8"] },
+    { "name": "Kimi", "tags": ["B4", "C10", "D5", "E2", "F7"] },
+    { "name": "Hana", "tags": ["B2", "B4", "C7", "D1", "E2", "F2", "F7"] },
+    { "name": "Mika", "tags": ["B2", "B4", "C10", "D5", "E2", "F7"] },
+    { "name": "Rina", "tags": ["B2", "B4", "C2", "D1", "E2", "F8"] },
+    { "name": "Emi", "tags": ["B2", "B4", "C2", "D3", "E2", "F8"] },
+    { "name": "Nana", "tags": ["A3", "B2", "B4", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "Saki", "tags": ["B2", "B4", "C2", "D1", "E2", "F8"] },
+    { "name": "Rika", "tags": ["B2", "B4", "C2", "D3", "E2", "F8"] },
+    { "name": "Naho", "tags": ["B2", "C2", "D3", "E3", "F8"] },
+    { "name": "Yuri", "tags": ["B2", "B4", "C6", "D2", "E3", "F8"] },
+    { "name": "Mina", "tags": ["B2", "B4", "C3", "D3", "E3", "F8"] },
+    { "name": "Hina", "tags": ["B2", "C9", "D5", "E1", "F7"] },
+    { "name": "Ami", "tags": ["B2", "B4", "C10", "D1", "E2", "F7"] },
+    { "name": "Yuna", "tags": ["B2", "B4", "C7", "D1", "E2", "F8"] },
+    { "name": "Sora", "tags": ["B2", "B4", "C2", "D2", "E2", "F8"] },
+    { "name": "Mari", "tags": ["B2", "B4", "C2", "D3", "E3", "F8"] },
+    { "name": "Kira", "tags": ["B4", "C1", "D4", "E3", "F7"] },
+    { "name": "Mei", "tags": ["B2", "B4", "C9", "D1", "E1", "F7"] },
+    { "name": "Sena", "tags": ["B2", "B4", "C2", "D3", "E2", "F8"] },
+    { "name": "Ruka", "tags": ["B2", "B4", "C6", "D2", "E3", "F8"] },
+    { "name": "Nami", "tags": ["B2", "B4", "C10", "D5", "E2", "F7"] },
+    { "name": "Maya", "tags": ["B4", "C1", "D4", "E3", "F8"] },
+    { "name": "Mako", "tags": ["B2", "C2", "D3", "E2", "F8"] },
+    { "name": "coco", "tags": ["A3", "B4", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "Hibi", "tags": ["B4", "C10", "D5", "E2", "F7"] },
+    { "name": "Una", "tags": ["B4", "C2", "D3", "E2", "F8"] },
+    { "name": "Hebe", "tags": ["B4", "C6", "D2", "E3", "F8"] },
+    { "name": "QQ", "tags": ["A3", "B4", "C9", "D5", "E1", "F7"] },
+    { "name": "KK", "tags": ["A3", "B4", "C1", "D4", "E3", "F7"] },
+    { "name": "Hazel", "tags": ["B4", "C2", "D3", "E3", "F2", "F8"] },
+    { "name": "Q比", "tags": ["B4", "C9", "D5", "E1", "F7"] },
+    { "name": "Gucci", "tags": ["B4", "C3", "D4", "E4", "F4", "F7"] },
+    { "name": "LV", "tags": ["B4", "C1", "D4", "E4", "F4", "F8"] },
+    { "name": "Chanel", "tags": ["B4", "C3", "D3", "E4", "F4", "F8"] },
+    { "name": "kimberly", "tags": ["B4", "C3", "D1", "E3", "F7"] },
+    { "name": "Cheery", "tags": ["B4", "C10", "D5", "E2", "F7"] },
+    { "name": "Lucy", "tags": ["B4", "C10", "D5", "E2", "F7"] },
+    { "name": "Crystal", "tags": ["B4", "C6", "D3", "E3", "F8"] },
+    { "name": "Celine", "tags": ["B4", "C3", "D3", "E3", "F4", "F8"] },
+    { "name": "西婭", "tags": ["A1", "B4", "C1", "D4", "E3", "F8"] },
+    { "name": "蕾雅", "tags": ["A1", "B4", "C3", "D1", "E3", "F8", "G9"] },
+    { "name": "米雅", "tags": ["A1", "B4", "C2", "D1", "E2", "F8", "G6", "G9"] },
+    { "name": "以安", "tags": ["A1", "B3", "C2", "D3", "E2", "F8"] },
+    { "name": "苡恩", "tags": ["A1", "B4", "C2", "D3", "E3", "F2", "F8", "G3"] },
+    { "name": "以琳", "tags": ["A1", "B4", "C2", "D3", "E3", "F8"] },
+    { "name": "喬安", "tags": ["A1", "B4", "C1", "D4", "E3", "F8"] },
+    { "name": "柚檸", "tags": ["A1", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "宥安", "tags": ["A1", "B1", "C2", "D3", "E3", "F8"] },
+    { "name": "侑恩", "tags": ["A1", "B1", "C2", "D3", "E3", "F8", "G3"] },
+    { "name": "米恩", "tags": ["A1", "B4", "C2", "D1", "E2", "F8", "G3", "G6"] },
+    { "name": "米妍", "tags": ["A1", "B1", "C7", "D1", "E2", "F8", "G1", "G6"] },
+    { "name": "米比", "tags": ["A1", "B4", "C9", "D5", "E1", "F7", "G6"] },
+    { "name": "咪嚕", "tags": ["A1", "B2", "C9", "D5", "E1", "F1", "F7", "G6"] },
+    { "name": "嚕米", "tags": ["A1", "B2", "C9", "D5", "E1", "F7", "G6"] },
+    { "name": "咪呀", "tags": ["A1", "B4", "C9", "D1", "E1", "F7", "G6"] },
+    { "name": "米爾", "tags": ["A1", "B4", "C2", "D3", "E2", "F8", "G6"] },
+    { "name": "米拉", "tags": ["A1", "B4", "C10", "D5", "E2", "F7", "G6"] },
+    { "name": "蜜拉", "tags": ["A1", "B4", "C1", "D4", "E4", "F7", "G6"] },
+    { "name": "蜜妍", "tags": ["A1", "B1", "C4", "D1", "E3", "F8", "G1", "G6"] },
+    { "name": "娜比", "tags": ["A1", "B1", "C9", "D1", "E1", "F7", "G4"] },
+    { "name": "漢娜", "tags": ["A1", "B4", "C1", "D4", "E3", "F7", "G4"] },
+    { "name": "朵娜", "tags": ["A1", "B4", "C10", "D1", "E2", "F7", "G4"] },
+    { "name": "朵莉", "tags": ["A1", "B4", "C9", "D5", "E1", "F7", "G5"] },
+    { "name": "露雅", "tags": ["A1", "B4", "C3", "D3", "E3", "F8", "G9"] },
+    { "name": "楓葉", "tags": ["A1", "B3", "C2", "D5", "E3", "F2", "F3", "F8"] },
+    { "name": "冰島", "tags": ["A1", "B4", "C6", "D2", "E4", "F5", "F8"] },
+    { "name": "倫敦", "tags": ["A1", "B4", "C1", "D4", "E4", "F5", "F8"] },
+    { "name": "芬蘭", "tags": ["A1", "B4", "C2", "D3", "E3", "F5", "F8"] },
+    { "name": "柏林", "tags": ["A1", "B4", "C6", "D4", "E4", "F5", "F8"] },
+    { "name": "丹麥", "tags": ["A1", "B4", "C10", "D5", "E2", "F5", "F7"] },
+    { "name": "巴黎", "tags": ["A1", "B4", "C3", "D1", "E4", "F5", "F7"] },
+    { "name": "雪梨", "tags": ["A1", "B4", "C10", "D5", "E2", "F5", "F7", "G5"] },
+    { "name": "瑞典", "tags": ["A1", "B4", "C2", "D2", "E3", "F5", "F8"] },
+    { "name": "瑞士", "tags": ["A1", "B4", "C3", "D3", "E3", "F5", "F8"] },
+    { "name": "希臘", "tags": ["A1", "B4", "C6", "D2", "E4", "F5", "F8"] },
+    { "name": "挪威", "tags": ["A1", "B4", "C6", "D4", "E4", "F5", "F8"] },
+    { "name": "約旦", "tags": ["A1", "B4", "C6", "D4", "E4", "F5", "F8"] },
+    { "name": "雅典", "tags": ["A1", "B4", "C3", "D3", "E3", "F5", "F8", "G9"] },
+    { "name": "蔚藍", "tags": ["A1", "B4", "C2", "D2", "E2", "F8"] },
+    { "name": "哈妮", "tags": ["A1", "B4", "C9", "D1", "E1", "F7"] },
+    { "name": "哈娜", "tags": ["A1", "B4", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "璐比", "tags": ["A1", "B4", "C9", "D1", "E1", "F7"] },
+    { "name": "斑比", "tags": ["A1", "B4", "C9", "D5", "E1", "F1", "F7"] },
+    { "name": "佐伊", "tags": ["A1", "B4", "C1", "D4", "E3", "F8"] },
+    { "name": "泰拉", "tags": ["A1", "B4", "C1", "D4", "E3", "F7"] },
+    { "name": "芭比", "tags": ["A1", "B4", "C3", "D1", "E2", "F7"] },
+    { "name": "艾瑞", "tags": ["A1", "B4", "C10", "D5", "E2", "F7"] },
+    { "name": "海瑟", "tags": ["A1", "B4", "C6", "D2", "E4", "F8"] },
+    { "name": "Gina", "tags": ["B4", "C1", "D4", "E3", "F7"] },
+    { "name": "Pinky", "tags": ["B4", "C9", "D1", "E1", "F7"] },
+    { "name": "MM", "tags": ["A3", "B4", "C9", "D5", "E1", "F7"] },
+    { "name": "YU", "tags": ["B4", "C2", "D3", "E2", "F8"] },
+    { "name": "Joan", "tags": ["B4", "C1", "D4", "E4", "F8"] },
+    { "name": "IVY", "tags": ["B4", "C1", "D4", "E3", "F2", "F8"] },
+    { "name": "Taco", "tags": ["B4", "C10", "D5", "E2", "F6", "F7"] },
+    { "name": "Sandy", "tags": ["B4", "C2", "D5", "E2", "F7"] },
+    { "name": "Anna", "tags": ["B4", "C2", "D3", "E2", "F8", "G4"] },
+    { "name": "Kiwi", "tags": ["B4", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "RuRu", "tags": ["A3", "B4", "C9", "D5", "E1", "F7"] },
+    { "name": "BoBo", "tags": ["A3", "B4", "C9", "D5", "E1", "F7"] },
+    { "name": "TT", "tags": ["A3", "B4", "C10", "D5", "E2", "F7"] },
+    { "name": "YY", "tags": ["A3", "B4", "C10", "D5", "E2", "F7"] },
+    { "name": "蕾蔓", "tags": ["A1", "B4", "C3", "D2", "E3", "F2", "F8"] },
+    { "name": "嚕嚕米", "tags": ["A2", "B2", "C9", "D5", "E1", "F1", "F7", "G6"] },
+    { "name": "奈奈", "tags": ["A1", "A3", "B2", "C9", "D1", "E1", "F7", "G4"] },
+    { "name": "繪繪", "tags": ["A1", "A3", "B2", "C9", "D1", "E1", "F7"] },
+    { "name": "櫻櫻", "tags": ["A1", "A3", "B2", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "萌萌", "tags": ["A1", "A3", "C9", "D5", "E1", "F7"] },
+    { "name": "里里", "tags": ["A1", "A3", "B2", "C9", "D5", "E1", "F7"] },
+    { "name": "美美", "tags": ["A1", "A3", "C2", "D1", "E2", "F7"] },
+    { "name": "咲咲", "tags": ["A1", "A3", "B2", "C10", "D5", "E2", "F7"] },
+    { "name": "乃乃", "tags": ["A1", "A3", "B2", "C9", "D5", "E1", "F7"] },
+    { "name": "織織", "tags": ["A1", "A3", "B2", "C2", "D3", "E2", "F8"] },
+    { "name": "穗穗", "tags": ["A1", "A3", "B2", "C2", "D5", "E2", "F2", "F8"] },
+    { "name": "醬醬", "tags": ["A1", "A3", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "由由", "tags": ["A1", "A3", "B2", "C9", "D5", "E1", "F7"] },
+    { "name": "央央", "tags": ["A1", "A3", "B2", "C2", "D3", "E2", "F8"] },
+    { "name": "香香", "tags": ["A1", "A3", "C10", "D1", "E2", "F7"] },
+    { "name": "真真", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "多多", "tags": ["A1", "A3", "C9", "D5", "E1", "F7"] },
+    { "name": "比比", "tags": ["A1", "A3", "C9", "D5", "E1", "F7"] },
+    { "name": "米米", "tags": ["A1", "A3", "C9", "D5", "E1", "F6", "F7", "G6"] },
+    { "name": "加加", "tags": ["A1", "A3", "C9", "D5", "E1", "F7"] },
+    { "name": "利利", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "那那", "tags": ["A1", "A3", "B2", "C10", "D5", "E2", "F7"] },
+    { "name": "可可", "tags": ["A1", "A3", "B4", "C9", "D4", "E1", "F6", "F7"] },
+    { "name": "希希", "tags": ["A1", "A3", "C10", "D5", "E2", "F7", "G2"] },
+    { "name": "露露", "tags": ["A1", "A3", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "瑠瑠", "tags": ["A1", "A3", "B2", "C9", "D3", "E1", "F7"] },
+    { "name": "嚕嚕", "tags": ["A1", "A3", "C9", "D5", "E1", "F7"] },
+    { "name": "三歲", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "五歲", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "芽芽", "tags": ["A1", "A3", "C9", "D5", "E1", "F2", "F7"] },
+    { "name": "祖祖", "tags": ["A1", "A3", "C10", "D5", "E1", "F7"] },
+    { "name": "芙芙", "tags": ["A1", "A3", "C9", "D1", "E1", "F2", "F7"] },
+    { "name": "芝芝", "tags": ["A1", "A3", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "萬萬", "tags": ["A1", "A3", "C10", "D5", "E1", "F7"] },
+    { "name": "歲歲", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "果果", "tags": ["A1", "A3", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "娜娜", "tags": ["A1", "A3", "B4", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "卷卷", "tags": ["A1", "A3", "C9", "D5", "E1", "F7"] },
+    { "name": "朵朵", "tags": ["A1", "A3", "C9", "D1", "E1", "F2", "F7"] },
+    { "name": "格格", "tags": ["A1", "A3", "C3", "D3", "E2", "F8"] },
+    { "name": "鬼鬼", "tags": ["A1", "A3", "C8", "D4", "E2", "F7"] },
+    { "name": "蘭蘭", "tags": ["A1", "A3", "C2", "D2", "E3", "F2", "F8"] },
+    { "name": "瑤瑤", "tags": ["A1", "A3", "C2", "D1", "E2", "F7"] },
+    { "name": "嘟嘟", "tags": ["A1", "A3", "C9", "D5", "E1", "F7"] },
+    { "name": "君君", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "茹茹", "tags": ["A1", "A3", "C2", "D1", "E2", "F8"] },
+    { "name": "糰糰", "tags": ["A1", "A3", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "崽崽", "tags": ["A1", "A3", "C9", "D5", "E1", "F1", "F7"] },
+    { "name": "葵葵", "tags": ["A1", "A3", "C10", "D5", "E2", "F2", "F7"] },
+    { "name": "沐沐", "tags": ["A1", "A3", "C2", "D2", "E2", "F8"] },
+    { "name": "冉冉", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "困困", "tags": ["A1", "A3", "C9", "D2", "E1", "F8"] },
+    { "name": "萱萱", "tags": ["A1", "A3", "C2", "D1", "E2", "F2", "F7"] },
+    { "name": "諾諾", "tags": ["A1", "A3", "C9", "D3", "E1", "F8"] },
+    { "name": "戀戀", "tags": ["A1", "A3", "C7", "D1", "E2", "F7"] },
+    { "name": "珈珈", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "宋宋", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "天天", "tags": ["A1", "A3", "C10", "D2", "E2", "F7"] },
+    { "name": "丹丹", "tags": ["A1", "A3", "C10", "D1", "E2", "F7"] },
+    { "name": "粥粥", "tags": ["A1", "A3", "C9", "D3", "E1", "F6", "F8"] },
+    { "name": "薯薯", "tags": ["A1", "A3", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "七七", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "淺淺", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "葆葆", "tags": ["A1", "A3", "C9", "D5", "E1", "F7"] },
+    { "name": "蓓蓓", "tags": ["A1", "A3", "C2", "D1", "E2", "F7"] },
+    { "name": "卿卿", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "念念", "tags": ["A1", "A3", "C7", "D3", "E2", "F8"] },
+    { "name": "柔柔", "tags": ["A1", "A3", "C2", "D1", "E2", "F8"] },
+    { "name": "琳琳", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "藍藍", "tags": ["A1", "A3", "C2", "D2", "E2", "F8"] },
+    { "name": "糯糯", "tags": ["A1", "A3", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "妍妍", "tags": ["A1", "A3", "B1", "C9", "D1", "E1", "F7", "G1"] },
+    { "name": "璃璃", "tags": ["A1", "A3", "C2", "D2", "E2", "F8", "G5"] },
+    { "name": "彤彤", "tags": ["A1", "A3", "C10", "D1", "E2", "F7"] },
+    { "name": "妮妮", "tags": ["A1", "A3", "B4", "C9", "D1", "E1", "F7"] },
+    { "name": "晴晴", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "茜茜", "tags": ["A1", "A3", "C2", "D1", "E2", "F7"] },
+    { "name": "琪琪", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "依依", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "熙熙", "tags": ["A1", "A3", "C3", "D3", "E2", "F8", "G2"] },
+    { "name": "喬喬", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "安安", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "檸檸", "tags": ["A1", "A3", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "婷婷", "tags": ["A1", "A3", "C2", "D1", "E2", "F7"] },
+    { "name": "汐汐", "tags": ["A1", "A3", "C6", "D2", "E2", "F8"] },
+    { "name": "梓梓", "tags": ["A1", "A3", "C2", "D3", "E2", "F2", "F8"] },
+    { "name": "茶茶", "tags": ["A1", "A3", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "夢夢", "tags": ["A1", "A3", "C4", "D1", "E2", "F8"] },
+    { "name": "乖乖", "tags": ["A1", "A3", "C9", "D3", "E1", "F7"] },
+    { "name": "莓莓", "tags": ["A1", "A3", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "波波", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "餅餅", "tags": ["A1", "A3", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "飯飯", "tags": ["A1", "A3", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "蕾蕾", "tags": ["A1", "A3", "C2", "D1", "E2", "F7"] },
+    { "name": "璨璨", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "微微", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "悠悠", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "童童", "tags": ["A1", "A3", "C9", "D5", "E1", "F7"] },
+    { "name": "沙沙", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "爍爍", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "靜靜", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "晶晶", "tags": ["A1", "A3", "C10", "D3", "E2", "F7"] },
+    { "name": "緗緗", "tags": ["A1", "A3", "C2", "D5", "E2", "F8"] },
+    { "name": "欣欣", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "莉莉", "tags": ["A1", "A3", "B4", "C10", "D5", "E2", "F7", "G5"] },
+    { "name": "茵茵", "tags": ["A1", "A3", "C2", "D1", "E2", "F2", "F8"] },
+    { "name": "洛洛", "tags": ["A1", "A3", "C2", "D2", "E2", "F8"] },
+    { "name": "棠棠", "tags": ["A1", "A3", "C2", "D1", "E2", "F2", "F8"] },
+    { "name": "甜甜", "tags": ["A1", "A3", "C9", "D1", "E1", "F6", "F7"] },
+    { "name": "蜜蜜", "tags": ["A1", "A3", "C9", "D1", "E1", "F6", "F7", "G6"] },
+    { "name": "羨羨", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "仙仙", "tags": ["A1", "A3", "B3", "C4", "D3", "E2", "F8"] },
+    { "name": "冰冰", "tags": ["A1", "A3", "C6", "D2", "E3", "F3", "F8"] },
+    { "name": "暖暖", "tags": ["A1", "A3", "C2", "D5", "E2", "F7"] },
+    { "name": "巧巧", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "霜霜", "tags": ["A1", "A3", "C6", "D3", "E3", "F3", "F8"] },
+    { "name": "橙橙", "tags": ["A1", "A3", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "璇璇", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "楚楚", "tags": ["A1", "A3", "C4", "D1", "E2", "F8"] },
+    { "name": "詩詩", "tags": ["A1", "A3", "C2", "D3", "E3", "F8"] },
+    { "name": "栗栗", "tags": ["A1", "A3", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "林林", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "花花", "tags": ["A1", "A3", "C10", "D1", "E2", "F2", "F7"] },
+    { "name": "歡歡", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "桃桃", "tags": ["A1", "A3", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "漾漾", "tags": ["A1", "A3", "C10", "D2", "E2", "F7"] },
+    { "name": "點點", "tags": ["A1", "A3", "C9", "D5", "E1", "F7"] },
+    { "name": "玖玖", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "珊珊", "tags": ["A1", "A3", "C2", "D3", "E2", "F8"] },
+    { "name": "蒂蒂", "tags": ["A1", "A3", "B4", "C10", "D5", "E2", "F7"] },
+    { "name": "盼盼", "tags": ["A1", "A3", "C2", "D5", "E2", "F7"] },
+    { "name": "夏夏", "tags": ["A1", "A3", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "樂樂", "tags": ["A1", "A3", "C10", "D5", "E2", "F7"] },
+    { "name": "決決", "tags": ["A1", "A3", "C8", "D4", "E2", "F7"] },
+    { "name": "佐佐", "tags": ["A1", "A3", "B2", "C10", "D5", "E2", "F7"] },
+    { "name": "綰綰", "tags": ["A1", "A3", "B3", "C4", "D1", "E2", "F8"] },
+    { "name": "蓮蓮", "tags": ["A1", "A3", "C2", "D3", "E2", "F2", "F8"] },
+    { "name": "菲菲", "tags": ["A1", "A3", "C2", "D1", "E2", "F7"] },
+    { "name": "小奈", "tags": ["A1", "C9", "D1", "E1", "F7", "G4"] },
+    { "name": "小娜", "tags": ["A1", "C10", "D5", "E2", "F7", "G4"] },
+    { "name": "小妮", "tags": ["A1", "C9", "D1", "E1", "F7"] },
+    { "name": "小莉", "tags": ["A1", "C2", "D5", "E2", "F7", "G5"] },
+    { "name": "小米", "tags": ["A1", "C9", "D5", "E1", "F6", "F7", "G6"] },
+    { "name": "小由", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "小辛", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小萊", "tags": ["A1", "C2", "D5", "E2", "F7"] },
+    { "name": "小諾", "tags": ["A1", "C9", "D3", "E1", "F7"] },
+    { "name": "小棠", "tags": ["A1", "C2", "D1", "E2", "F2", "F8"] },
+    { "name": "小昂", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小繪", "tags": ["A1", "C2", "D2", "E2", "F8"] },
+    { "name": "小及", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "小比", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "小也", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "小豆", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "小布", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "小卡", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小多", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "小恩", "tags": ["A1", "C2", "D3", "E2", "F7", "G3"] },
+    { "name": "小熙", "tags": ["A1", "C3", "D3", "E2", "F8", "G2"] },
+    { "name": "小妍", "tags": ["A1", "C2", "D1", "E2", "F8", "G1"] },
+    { "name": "小允", "tags": ["A1", "C2", "D3", "E2", "F8", "G7"] },
+    { "name": "小雅", "tags": ["A1", "C2", "D3", "E2", "F8", "G9"] },
+    { "name": "小智", "tags": ["A1", "C2", "D2", "E2", "F8", "G10"] },
+    { "name": "小秀", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小采", "tags": ["A1", "C2", "D5", "E2", "F8"] },
+    { "name": "小瑞", "tags": ["A1", "C2", "D5", "E2", "F8"] },
+    { "name": "小芯", "tags": ["A1", "C9", "D1", "E1", "F2", "F7"] },
+    { "name": "小沁", "tags": ["A1", "C2", "D2", "E2", "F8"] },
+    { "name": "小沐", "tags": ["A1", "C2", "D2", "E2", "F8"] },
+    { "name": "小芊", "tags": ["A1", "C2", "D1", "E2", "F2", "F8"] },
+    { "name": "小舒", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小凡", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小瑾", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小宣", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小歆", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小希", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小晨", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小汐", "tags": ["A1", "C2", "D2", "E2", "F8"] },
+    { "name": "小芮", "tags": ["A1", "C2", "D1", "E2", "F7"] },
+    { "name": "小寧", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小璦", "tags": ["A1", "C3", "D1", "E2", "F8"] },
+    { "name": "小世", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小曼", "tags": ["A1", "C4", "D4", "E3", "F8"] },
+    { "name": "小瑛", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小知", "tags": ["A1", "C2", "D3", "E2", "F8", "G10"] },
+    { "name": "小韶", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小宥", "tags": ["A1", "C2", "D5", "E2", "F8"] },
+    { "name": "小玟", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小漢", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小丹", "tags": ["A1", "C10", "D1", "E2", "F7"] },
+    { "name": "小海", "tags": ["A1", "C2", "D2", "E2", "F7"] },
+    { "name": "小珠", "tags": ["A1", "C9", "D3", "E1", "F7"] },
+    { "name": "小漫", "tags": ["A1", "C2", "D2", "E2", "F8"] },
+    { "name": "小露", "tags": ["A1", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "小惠", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小敏", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小藝", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小萌", "tags": ["A1", "C9", "D1", "E1", "F7"] },
+    { "name": "小咪", "tags": ["A1", "C9", "D5", "E1", "F7", "G6"] },
+    { "name": "小夢", "tags": ["A1", "C4", "D1", "E2", "F8"] },
+    { "name": "小柔", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小茜", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小朵", "tags": ["A1", "C9", "D1", "E1", "F2", "F7"] },
+    { "name": "小貝", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "小茉", "tags": ["A1", "C2", "D3", "E2", "F2", "F8"] },
+    { "name": "小可", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "小欣", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小琳", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小琦", "tags": ["A1", "C2", "D5", "E2", "F8"] },
+    { "name": "小茵", "tags": ["A1", "C2", "D1", "E2", "F2", "F8"] },
+    { "name": "小蕾", "tags": ["A1", "C2", "D1", "E2", "F7"] },
+    { "name": "小緹", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小霏", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小愛", "tags": ["A1", "C9", "D1", "E1", "F7"] },
+    { "name": "小莎", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小綺", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小羽", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小薇", "tags": ["A1", "C2", "D1", "E2", "F2", "F8"] },
+    { "name": "小佳", "tags": ["A1", "C2", "D1", "E2", "F7"] },
+    { "name": "小真", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小恬", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小糖", "tags": ["A1", "C9", "D1", "E1", "F6", "F7"] },
+    { "name": "小蜜", "tags": ["A1", "C9", "D1", "E1", "F6", "F7", "G6"] },
+    { "name": "小柚", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "小澄", "tags": ["A1", "C2", "D5", "E2", "F8"] },
+    { "name": "小橙", "tags": ["A1", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "小葵", "tags": ["A1", "C10", "D5", "E2", "F2", "F7"] },
+    { "name": "小霓", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小彩", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小璐", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小瑤", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小璇", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小琪", "tags": ["A1", "C2", "D5", "E2", "F8"] },
+    { "name": "小瀅", "tags": ["A1", "C2", "D2", "E2", "F8"] },
+    { "name": "小芷", "tags": ["A1", "C2", "D2", "E2", "F2", "F8", "G10"] },
+    { "name": "小荷", "tags": ["A1", "C2", "D2", "E2", "F2", "F8"] },
+    { "name": "小琉", "tags": ["A1", "C2", "D2", "E2", "F8"] },
+    { "name": "小璃", "tags": ["A1", "C2", "D2", "E2", "F8", "G5"] },
+    { "name": "小苒", "tags": ["A1", "C2", "D2", "E2", "F8"] },
+    { "name": "小若", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小初", "tags": ["A1", "C7", "D3", "E2", "F8"] },
+    { "name": "小墨", "tags": ["A1", "C6", "D4", "E3", "F8"] },
+    { "name": "小書", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小桐", "tags": ["A1", "C2", "D3", "E2", "F2", "F8"] },
+    { "name": "小予", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小以", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小悠", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小艾", "tags": ["A1", "C10", "D5", "E2", "F2", "F7"] },
+    { "name": "小蘇", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小冉", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小悅", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小黛", "tags": ["A1", "C6", "D4", "E3", "F8"] },
+    { "name": "小薰", "tags": ["A1", "C2", "D4", "E2", "F2", "F8"] },
+    { "name": "小澈", "tags": ["A1", "C2", "D2", "E2", "F8"] },
+    { "name": "小冬", "tags": ["A1", "C6", "D2", "E2", "F3", "F8"] },
+    { "name": "小雪", "tags": ["A1", "C6", "D3", "E2", "F3", "F8"] },
+    { "name": "小彤", "tags": ["A1", "C10", "D1", "E2", "F7"] },
+    { "name": "小珊", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小哲", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小昱", "tags": ["A1", "C2", "D5", "E2", "F8"] },
+    { "name": "小奕", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小之", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小安", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小然", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小夏", "tags": ["A1", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "小南", "tags": ["A1", "C2", "D5", "E2", "F8"] },
+    { "name": "小北", "tags": ["A1", "C6", "D2", "E2", "F8"] },
+    { "name": "小西", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小圓", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "小櫻", "tags": ["A1", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "小莓", "tags": ["A1", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "小梨", "tags": ["A1", "C9", "D3", "E1", "F2", "F6", "F7", "G5"] },
+    { "name": "小檸", "tags": ["A1", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "小果", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "小桃", "tags": ["A1", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "小芙", "tags": ["A1", "C9", "D1", "E1", "F7"] },
+    { "name": "小慕", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小拿", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小鹽", "tags": ["A1", "C4", "D3", "E2", "F6", "F8"] },
+    { "name": "小奶", "tags": ["A1", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "小酥", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "小餅", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "小塔", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "小派", "tags": ["A1", "C10", "D5", "E1", "F6", "F7"] },
+    { "name": "小泡", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "小蔓", "tags": ["A1", "C2", "D5", "E2", "F2", "F8"] },
+    { "name": "小荔", "tags": ["A1", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "小杏", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "小柿", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "小椰", "tags": ["A1", "C10", "D3", "E2", "F2", "F6", "F7"] },
+    { "name": "小桑", "tags": ["A1", "C2", "D4", "E2", "F2", "F6", "F8"] },
+    { "name": "小茶", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "小桂", "tags": ["A1", "C2", "D5", "E2", "F2", "F8"] },
+    { "name": "小波", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小卿", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小錦", "tags": ["A1", "C3", "D3", "E2", "F8"] },
+    { "name": "小笙", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小裳", "tags": ["A1", "C3", "D1", "E2", "F8"] },
+    { "name": "小綰", "tags": ["A1", "C4", "D1", "E2", "F8"] },
+    { "name": "小絳", "tags": ["A1", "C6", "D4", "E3", "F8"] },
+    { "name": "小檀", "tags": ["A1", "C2", "D3", "E2", "F2", "F8"] },
+    { "name": "小鳶", "tags": ["A1", "C6", "D2", "E2", "F1", "F8"] },
+    { "name": "小鸞", "tags": ["A1", "C6", "D4", "E2", "F1", "F8"] },
+    { "name": "小雲", "tags": ["A1", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "小月", "tags": ["A1", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "小昭", "tags": ["A1", "C2", "D5", "E2", "F8"] },
+    { "name": "小秋", "tags": ["A1", "C2", "D5", "E2", "F3", "F8"] },
+    { "name": "小霜", "tags": ["A1", "C6", "D3", "E2", "F3", "F8"] },
+    { "name": "小素", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小幽", "tags": ["A1", "C6", "D4", "E3", "F8"] },
+    { "name": "小蘭", "tags": ["A1", "C2", "D2", "E3", "F2", "F8"] },
+    { "name": "小影", "tags": ["A1", "C6", "D4", "E3", "F8"] },
+    { "name": "小染", "tags": ["A1", "C4", "D1", "E2", "F8"] },
+    { "name": "小水", "tags": ["A1", "C2", "D2", "E2", "F8"] },
+    { "name": "小煙", "tags": ["A1", "C6", "D4", "E3", "F8"] },
+    { "name": "小塵", "tags": ["A1", "C6", "D3", "E3", "F8"] },
+    { "name": "小晴", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小倩", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小優", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小綠", "tags": ["A1", "C10", "D2", "E2", "F7"] },
+    { "name": "小乖", "tags": ["A1", "C9", "D3", "E1", "F7"] },
+    { "name": "小孟", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小兔", "tags": ["A1", "C9", "D3", "E1", "F1", "F7"] },
+    { "name": "小玥", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小語", "tags": ["A1", "C2", "D3", "E2", "F8", "G8"] },
+    { "name": "小伊", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小苗", "tags": ["A1", "C2", "D5", "E2", "F2", "F8"] },
+    { "name": "小甯", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小媛", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小童", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "小玉", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小魚", "tags": ["A1", "C10", "D2", "E2", "F1", "F7"] },
+    { "name": "小辣", "tags": ["A1", "C8", "D1", "E2", "F7"] },
+    { "name": "小蘿", "tags": ["A1", "C9", "D1", "E1", "F2", "F7"] },
+    { "name": "小靜", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小紜", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小玖", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小璇", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小喬", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小芝", "tags": ["A1", "C2", "D5", "E2", "F2", "F8"] },
+    { "name": "小姜", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小瑜", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小茹", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小願", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小栗", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "小怡", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小丸", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "小慧", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小嫻", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小妤", "tags": ["A1", "C2", "D3", "E2", "F8", "G8"] },
+    { "name": "小滿", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小天", "tags": ["A1", "C10", "D2", "E2", "F7"] },
+    { "name": "小桔", "tags": ["A1", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "小霜", "tags": ["A1", "C6", "D3", "E2", "F3", "F8"] },
+    { "name": "小鄭", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小橘", "tags": ["A1", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "小燦", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小寶", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "小咲", "tags": ["A1", "C10", "D1", "E2", "F7"] },
+    { "name": "小蓓", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "小春", "tags": ["A1", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "小羨", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小柒", "tags": ["A1", "C6", "D4", "E2", "F8"] },
+    { "name": "小婉", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小羊", "tags": ["A1", "C9", "D3", "E1", "F1", "F7"] },
+    { "name": "小燕", "tags": ["A1", "C2", "D5", "E2", "F1", "F8"] },
+    { "name": "小蝶", "tags": ["A1", "C10", "D1", "E2", "F1", "F7"] },
+    { "name": "小二", "tags": ["A1", "C5", "D5", "E2", "F7"] },
+    { "name": "小八", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小N", "tags": ["A1", "B4", "C10", "D5", "E2", "F7"] },
+    { "name": "小庭", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "小朋", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小雙", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "小豬", "tags": ["A1", "C9", "D1", "E1", "F1", "F7"] },
+    { "name": "小楓", "tags": ["A1", "C2", "D5", "E2", "F2", "F8"] },
+    { "name": "柚兒", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "櫻兒", "tags": ["A1", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "莓兒", "tags": ["A1", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "梨兒", "tags": ["A1", "C9", "D3", "E1", "F2", "F6", "F7", "G5"] },
+    { "name": "檸兒", "tags": ["A1", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "桃兒", "tags": ["A1", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "糖兒", "tags": ["A1", "C9", "D1", "E1", "F6", "F7"] },
+    { "name": "蜜兒", "tags": ["A1", "C9", "D1", "E1", "F6", "F7", "G6"] },
+    { "name": "布兒", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "芙兒", "tags": ["A1", "C9", "D1", "E1", "F2", "F7"] },
+    { "name": "慕兒", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "可兒", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "蘇兒", "tags": ["A1", "B3", "C2", "D3", "E2", "F8"] },
+    { "name": "鹽兒", "tags": ["A1", "C4", "D3", "E2", "F6", "F8"] },
+    { "name": "荷兒", "tags": ["A1", "B3", "C2", "D2", "E2", "F2", "F8"] },
+    { "name": "橙兒", "tags": ["A1", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "露兒", "tags": ["A1", "C9", "D3", "E1", "F3", "F7"] },
+    { "name": "餅兒", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "酥兒", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "奶兒", "tags": ["A1", "C9", "D3", "E1", "F6", "F7"] },
+    { "name": "朵兒", "tags": ["A1", "C9", "D1", "E1", "F2", "F7"] },
+    { "name": "果兒", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "蔓兒", "tags": ["A1", "C2", "D5", "E2", "F2", "F8"] },
+    { "name": "荔兒", "tags": ["A1", "C9", "D1", "E1", "F2", "F6", "F7"] },
+    { "name": "杏兒", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "柿兒", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "椰兒", "tags": ["A1", "C10", "D3", "E2", "F2", "F6", "F7"] },
+    { "name": "桑兒", "tags": ["A1", "C2", "D4", "E2", "F2", "F6", "F8"] },
+    { "name": "茶兒", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "桂兒", "tags": ["A1", "C2", "D5", "E2", "F2", "F8"] },
+    { "name": "蕾兒", "tags": ["A1", "C2", "D1", "E2", "F7"] },
+    { "name": "波兒", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "拿兒", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "卡兒", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "塔兒", "tags": ["A1", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "派兒", "tags": ["A1", "C10", "D5", "E1", "F6", "F7"] },
+    { "name": "奈兒", "tags": ["A1", "B4", "C3", "D3", "E3", "F4", "F8", "G4"] },
+    { "name": "繪兒", "tags": ["A1", "B2", "C2", "D2", "E2", "F8"] },
+    { "name": "緒兒", "tags": ["A1", "B2", "C2", "D3", "E2", "F8"] },
+    { "name": "織兒", "tags": ["A1", "B2", "C2", "D3", "E2", "F8"] },
+    { "name": "萌兒", "tags": ["A1", "C9", "D1", "E1", "F7"] },
+    { "name": "穗兒", "tags": ["A1", "B2", "C2", "D5", "E2", "F2", "F8"] },
+    { "name": "遙兒", "tags": ["A1", "B2", "C2", "D3", "E2", "F8"] },
+    { "name": "葵兒", "tags": ["A1", "B2", "C10", "D5", "E2", "F2", "F7"] },
+    { "name": "詩兒", "tags": ["A1", "C2", "D3", "E3", "F8"] },
+    { "name": "乃兒", "tags": ["A1", "B2", "C9", "D3", "E1", "F7"] },
+    { "name": "薰兒", "tags": ["A1", "B2", "C2", "D4", "E2", "F2", "F8"] },
+    { "name": "央兒", "tags": ["A1", "B2", "C2", "D3", "E2", "F8"] },
+    { "name": "咲兒", "tags": ["A1", "B2", "C10", "D1", "E2", "F7"] },
+    { "name": "由兒", "tags": ["A1", "B2", "C9", "D5", "E1", "F7"] },
+    { "name": "美兒", "tags": ["A1", "C2", "D1", "E2", "F7"] },
+    { "name": "真兒", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "栞兒", "tags": ["A1", "B2", "C2", "D3", "E2", "F8"] },
+    { "name": "香兒", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "愛兒", "tags": ["A1", "C9", "D1", "E1", "F7"] },
+    { "name": "里兒", "tags": ["A1", "B2", "C2", "D5", "E2", "F8"] },
+    { "name": "惠兒", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "結兒", "tags": ["A1", "B2", "C7", "D3", "E2", "F8"] },
+    { "name": "芊兒", "tags": ["A1", "B3", "C2", "D1", "E2", "F2", "F8"] },
+    { "name": "墨兒", "tags": ["A1", "B3", "C6", "D4", "E3", "F8"] },
+    { "name": "瑤兒", "tags": ["A1", "B3", "C2", "D1", "E2", "F8"] },
+    { "name": "卿兒", "tags": ["A1", "B3", "C2", "D3", "E2", "F8"] },
+    { "name": "錦兒", "tags": ["A1", "B3", "C3", "D3", "E2", "F8"] },
+    { "name": "笙兒", "tags": ["A1", "B3", "C2", "D3", "E2", "F8"] },
+    { "name": "霓兒", "tags": ["A1", "B3", "C1", "D1", "E3", "F8"] },
+    { "name": "裳兒", "tags": ["A1", "B3", "C3", "D1", "E3", "F8"] },
+    { "name": "綰兒", "tags": ["A1", "B3", "C4", "D1", "E2", "F8"] },
+    { "name": "絳兒", "tags": ["A1", "B3", "C6", "D4", "E3", "F8"] },
+    { "name": "檀兒", "tags": ["A1", "B3", "C2", "D3", "E2", "F2", "F8"] },
+    { "name": "鳶兒", "tags": ["A1", "B3", "C6", "D2", "E2", "F1", "F8"] },
+    { "name": "鸞兒", "tags": ["A1", "B3", "C6", "D4", "E2", "F1", "F8"] },
+    { "name": "雲兒", "tags": ["A1", "B3", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "月兒", "tags": ["A1", "B3", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "昭兒", "tags": ["A1", "B3", "C2", "D5", "E2", "F8"] },
+    { "name": "秋兒", "tags": ["A1", "B3", "C2", "D5", "E2", "F3", "F8"] },
+    { "name": "霜兒", "tags": ["A1", "B3", "C6", "D3", "E2", "F3", "F8"] },
+    { "name": "素兒", "tags": ["A1", "B3", "C2", "D3", "E2", "F8"] },
+    { "name": "幽兒", "tags": ["A1", "B3", "C6", "D4", "E3", "F8"] },
+    { "name": "蘭兒", "tags": ["A1", "B3", "C2", "D2", "E3", "F2", "F8"] },
+    { "name": "黛兒", "tags": ["A1", "B3", "C6", "D4", "E3", "F8"] },
+    { "name": "影兒", "tags": ["A1", "B3", "C6", "D4", "E3", "F8"] },
+    { "name": "染兒", "tags": ["A1", "B3", "C4", "D1", "E2", "F8"] },
+    { "name": "沁兒", "tags": ["A1", "B3", "C2", "D2", "E2", "F8"] },
+    { "name": "水兒", "tags": ["A1", "B3", "C2", "D2", "E2", "F8"] },
+    { "name": "煙兒", "tags": ["A1", "B3", "C6", "D4", "E3", "F8"] },
+    { "name": "塵兒", "tags": ["A1", "B3", "C6", "D3", "E3", "F8"] },
+    { "name": "蝶兒", "tags": ["A1", "B3", "C10", "D1", "E2", "F1", "F7"] },
+    { "name": "鳳兒", "tags": ["A1", "B3", "C1", "D4", "E4", "F1", "F8"] },
+    { "name": "夢兒", "tags": ["A1", "C4", "D1", "E2", "F8"] },
+    { "name": "璃兒", "tags": ["A1", "B3", "C2", "D2", "E2", "F8", "G5"] },
+    { "name": "語兒", "tags": ["A1", "B3", "C2", "D3", "E2", "F8", "G8"] },
+    { "name": "玥兒", "tags": ["A1", "B3", "C2", "D3", "E2", "F8"] },
+    { "name": "蘿兒", "tags": ["A1", "C9", "D1", "E1", "F2", "F7"] },
+    { "name": "海兒", "tags": ["A1", "C2", "D2", "E2", "F7"] },
+    { "name": "冰兒", "tags": ["A1", "B3", "C6", "D2", "E2", "F3", "F8"] },
+    { "name": "雙兒", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "潔兒", "tags": ["A1", "C9", "D3", "E1", "F7"] },
+    { "name": "曦兒", "tags": ["A1", "B3", "C2", "D5", "E2", "F8"] },
+    { "name": "仙兒", "tags": ["A1", "B3", "C4", "D3", "E2", "F8"] },
+    { "name": "巧兒", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "妍兒", "tags": ["A1", "B1", "C2", "D1", "E2", "F8", "G1"] },
+    { "name": "祖兒", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "穎兒", "tags": ["A1", "C2", "D3", "E3", "F8"] },
+    { "name": "桔兒", "tags": ["A1", "C10", "D5", "E2", "F2", "F6", "F7"] },
+    { "name": "玖兒", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "馨兒", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "兜兒", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "芷兒", "tags": ["A1", "B3", "C2", "D2", "E2", "F2", "F8", "G10"] },
+    { "name": "璐兒", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "婉兒", "tags": ["A1", "B3", "C2", "D3", "E2", "F8"] },
+    { "name": "星兒", "tags": ["A1", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "茹兒", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "芸兒", "tags": ["A1", "C2", "D2", "E2", "F8"] },
+    { "name": "琳兒", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "寶兒", "tags": ["A1", "C9", "D5", "E1", "F7"] },
+    { "name": "星期天", "tags": ["A2", "C10", "D5", "E2", "F7"] },
+    { "name": "學姐", "tags": ["A1", "C3", "D3", "E3", "F8"] },
+    { "name": "學妹", "tags": ["A1", "C2", "D1", "E2", "F7"] },
+    { "name": "搗蛋", "tags": ["A1", "C8", "D4", "E1", "F7"] },
+    { "name": "九尾", "tags": ["A1", "B2", "C8", "D4", "E3", "F1", "F8"] },
+    { "name": "阿拉蕾", "tags": ["A2", "B2", "C9", "D5", "E1", "F7"] },
+    { "name": "哥吉拉", "tags": ["A2", "C10", "D4", "E2", "F1", "F7"] },
+    { "name": "企鵝", "tags": ["A1", "C9", "D3", "E1", "F1", "F7"] },
+    { "name": "大G", "tags": ["A1", "B4", "C1", "D4", "E4", "F7"] },
+    { "name": "誘惑", "tags": ["A1", "C4", "D4", "E4", "F8"] },
+    { "name": "初二", "tags": ["A1", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "初三", "tags": ["A1", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "初四", "tags": ["A1", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "初五", "tags": ["A1", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "初六", "tags": ["A1", "C10", "D5", "E2", "F3", "F7"] },
+    { "name": "年年", "tags": ["A1", "A3", "C2", "D5", "E2", "F3", "F7"] },
+    { "name": "一月", "tags": ["A1", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "二月", "tags": ["A1", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "三月", "tags": ["A1", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "四月", "tags": ["A1", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "五月", "tags": ["A1", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "六月", "tags": ["A1", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "七月", "tags": ["A1", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "八月", "tags": ["A1", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "九月", "tags": ["A1", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "十月", "tags": ["A1", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "十一月", "tags": ["A2", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "十二月", "tags": ["A2", "C2", "D3", "E2", "F3", "F8"] },
+    { "name": "哇沙米", "tags": ["A2", "C10", "D5", "E2", "F6", "F7", "G6"] },
+    { "name": "撒西米", "tags": ["A2", "C10", "D1", "E2", "F6", "F7", "G6"] },
+    { "name": "黑皮", "tags": ["A1", "B4", "C10", "D5", "E2", "F7"] },
+    { "name": "自摸", "tags": ["A1", "C10", "D5", "E3", "F7"] },
+    { "name": "紅中", "tags": ["A1", "C10", "D1", "E3", "F7"] },
+    { "name": "白鴿", "tags": ["A1", "C2", "D3", "E2", "F1", "F8"] },
+    { "name": "貓咪", "tags": ["A1", "C9", "D1", "E1", "F1", "F7", "G6"] },
+    { "name": "偷偷", "tags": ["A1", "A3", "C9", "D5", "E2", "F8"] },
+    { "name": "本本", "tags": ["A1", "A3", "C9", "D5", "E2", "F8"] },
+    { "name": "逆光", "tags": ["A1", "C6", "D2", "E3", "F8"] },
+    { "name": "早安", "tags": ["A1", "C2", "D3", "E2", "F7"] },
+    { "name": "晚安", "tags": ["A1", "C2", "D3", "E2", "F8"] },
+    { "name": "希望", "tags": ["A1", "C2", "D3", "E2", "F7"] },
+    { "name": "未來", "tags": ["A1", "C2", "D3", "E2", "F7"] },
+    { "name": "寶貝", "tags": ["A1", "C9", "D1", "E1", "F7"] },
+    { "name": "螢光", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "刺蝟", "tags": ["A1", "C6", "D4", "E2", "F1", "F8"] },
+    { "name": "蘿蔔", "tags": ["A1", "C9", "D5", "E1", "F2", "F6", "F7"] },
+    { "name": "佐醬", "tags": ["A1", "B2", "C9", "D5", "E1", "F6", "F7"] },
+    { "name": "三喜", "tags": ["A1", "C10", "D5", "E2", "F6", "F7"] },
+    { "name": "七喜", "tags": ["A1", "C10", "D5", "E2", "F6", "F7"] },
+    { "name": "樂瑤", "tags": ["A1", "C2", "D1", "E2", "F7"] },
+    { "name": "樂多", "tags": ["A1", "C10", "D5", "E2", "F7"] },
+    { "name": "樂尹", "tags": ["A1", "C2", "D3", "E3", "F8"] },
+    { "name": "侑瑤", "tags": ["A1", "C2", "D1", "E2", "F8"] },
+    { "name": "舒淇", "tags": ["A1", "C1", "D4", "E4", "F8"] },
+    { "name": "喵喵", "tags": ["A1", "A3", "C9", "D1", "E1", "F1", "F7"] },
+    { "name": "咪咪", "tags": ["A1", "A3", "C9", "D1", "E1", "F1", "F7", "G6"] },
+    { "name": "咩咩", "tags": ["A1", "A3", "C9", "D3", "E1", "F1", "F7"] },
+    { "name": "狗狗", "tags": ["A1", "A3", "C9", "D5", "E1", "F1", "F7"] },
+    { "name": "蟲蟲", "tags": ["A1", "A3", "C10", "D5", "E1", "F1", "F7"] },
+    { "name": "星星", "tags": ["A1", "A3", "C10", "D5", "E2", "F3", "F7"] }
+];
+
+    let selectedTags = new Set();
+    let shortlist = [];
+    let generatedHistory = new Set(); 
+
+    // --- 3. 初始化畫面 (渲染第一頁標籤) ---
+    function initUI() {
+        const container = document.getElementById('tags-container');
+        for (const [category, tags] of Object.entries(tagCategories)) {
+            const title = document.createElement('div');
+            title.className = 'section-title text-gold';
+            title.innerHTML = `${category} <span class="optional-mark">(可選可不選)</span>`;
+            container.appendChild(title);
+
+            const group = document.createElement('div');
+            group.className = 'tag-group';
+            
+            tags.forEach(tagObj => {
+                const btn = document.createElement('div');
+                btn.className = 'tag';
+                btn.textContent = tagObj.text; // 畫面上顯示中文
+                // 點擊時，記錄的是背後的代碼 (如 A1, C3)
+                btn.onclick = () => toggleTag(btn, tagObj.code);
+                group.appendChild(btn);
+            });
+            container.appendChild(group);
+        }
+
+        // 顯示載入成功狀態
+        document.getElementById('loading-status').textContent = `✅ 成功載入 ${nameDatabase.length} 筆靈感資料庫！`;
+        document.getElementById('main-gen-btn').disabled = false;
+    }
+
+    function toggleTag(btnElement, tagCode) {
+        if (selectedTags.has(tagCode)) {
+            selectedTags.delete(tagCode);
+            btnElement.classList.remove('active');
+        } else {
+            selectedTags.add(tagCode);
+            btnElement.classList.add('active');
+        }
+    }
+
+    // --- 4. 演算法：計分、過濾重複與生成 ---
+    function generateAndGoToPage2() {
+        generatedHistory.clear();
+        processGeneration();
+        showPage(2);
+    }
+
+    function generateMore() {
+        processGeneration();
+    }
+
+    function processGeneration() {
+        const userTags = Array.from(selectedTags);
+        let results = [];
+
+        let scoredDB = nameDatabase.map(item => {
+            let score = 0;
+            let matchedTags = [];
+            
+            if (Array.isArray(item.tags)) {
+                item.tags.forEach(t => {
+                    if (userTags.includes(t)) {
+                        score++;
+                        matchedTags.push(t);
+                    }
+                });
+            }
+            return { ...item, score, matchedTags };
+        });
+
+        let availableDB = scoredDB.filter(item => {
+            if (generatedHistory.has(item.name)) {
+                return Math.random() < 0.03; 
+            }
+            return true;
+        });
+
+        if (availableDB.length < 9) {
+            generatedHistory.clear();
+            availableDB = scoredDB; 
+        }
+
+        availableDB.sort((a, b) => {
+            if (userTags.length > 0 && b.score !== a.score) {
+                return b.score - a.score;
+            }
+            return 0.5 - Math.random(); 
+        });
+
+        results = availableDB.slice(0, 9);
+        results.forEach(r => generatedHistory.add(r.name));
+
+        renderResults(results);
+    }
+
+    function renderResults(results) {
+        const area = document.getElementById('resultArea');
+        area.innerHTML = ''; 
+
+        results.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'name-card';
+            
+            let scoreHtml = '';
+            if (selectedTags.size > 0 && item.score > 0) {
+                scoreHtml = `<div class="match-score">🔥 命中 ${item.score} 標籤</div>`;
+            } else if (selectedTags.size > 0 && item.score === 0) {
+                scoreHtml = `<div class="match-score" style="color:#888; background:#333;">💡 拓展推薦</div>`;
+            }
+
+            const safeTags = Array.isArray(item.tags) ? item.tags : [];
+            // 將 A1, B4 轉換回中文顯示，找不到對應就原樣顯示
+            const displayTags = safeTags.map(code => codeToText[code] || code).slice(0, 4).join(' #');
+
+            div.innerHTML = `
+                ${scoreHtml}
+                <span class="name-main text-gold">${item.name}</span>
+                <span class="name-tags">#${displayTags}</span>
+            `;
+            div.onclick = () => addToList(item.name);
+            area.appendChild(div);
+        });
+    }
+
+    // --- 5. 候選名單功能 ---
+    function addToList(name) {
+        if (!shortlist.includes(name)) {
+            shortlist.push(name);
+            renderList();
+        }
+    }
+
+    function remove(name) {
+        shortlist = shortlist.filter(n => n !== name);
+        renderList();
+    }
+
+    function clearList() { 
+        shortlist = []; 
+        renderList();
+    }
+
+    function renderList() {
+        const container = document.getElementById('listItems');
+        if (shortlist.length === 0) {
+            container.innerHTML = `<p style="color: #666; text-align: center; margin: 40px 0;">點擊左側名字<br>即可收藏至此</p>`;
+            return;
+        }
+        container.innerHTML = shortlist.map(n => `
+            <div class="list-item">
+                <span class="text-gold">${n}</span>
+                <button class="del-btn" onclick="remove('${n}')">✕</button>
+            </div>
+        `).join('');
+    }
+
+    // --- 6. 頁面切換控制 ---
+    function showPage(pageNum) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page' + pageNum).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToPage1() {
+        showPage(1);
+    }
+
+    // --- 啟動初始化 ---
+    initUI();
+
+</script>
+</body>
+</html>
+
+
